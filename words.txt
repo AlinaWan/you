@@ -1,2 +1,2 @@
 you	2026-09-10	you,miss,longing,person,love	I miss you.
-monster bobo latte	2026-09-10	food,nostalgia	That drink.
+monster bobo latte	2026-09-10	food,nostalgia,memory	That drink.
