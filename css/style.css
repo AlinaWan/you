@@ -211,15 +211,17 @@ canvas {
 }
 
 .trackButton {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 26px;
     margin: 14px 0 0 auto;
-    padding: 5px 9px;
+    padding: 0;
     border: 1px solid #333;
     border-radius: 5px;
     background: transparent;
     color: #777;
-    font: inherit;
-    font-size: 11px;
     cursor: pointer;
     transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
@@ -234,6 +236,19 @@ canvas {
         border-color: #777;
     }
 
+    .trackButton:focus {
+        outline: none;
+    }
+
+    .trackButton:focus-visible {
+        outline: 1px solid #666;
+        outline-offset: 2px;
+    }
+
+    .trackButton svg {
+        width: 16px;
+        height: 16px;
+    }
 
 /* =========================================================
            MUTE BUTTON
