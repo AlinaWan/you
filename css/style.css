@@ -236,6 +236,52 @@ canvas {
 
 
 /* =========================================================
+           MUTE BUTTON
+*======================================================== */
+#muteButton {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: rgba(20, 20, 20, 0.85);
+    color: #777;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+    #muteButton:hover {
+        background: rgba(35, 35, 35, 0.95);
+        border-color: #555;
+    }
+
+    #muteButton:active {
+        background: rgba(50, 50, 50, 0.95);
+    }
+
+    #muteButton svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    #muteButton:focus {
+        outline: none;
+    }
+
+    #muteButton:focus-visible {
+        outline: 2px solid #666;
+        outline-offset: 2px;
+    }
+
+
+/* =========================================================
            HELP
 ========================================================= */
 

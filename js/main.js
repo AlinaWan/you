@@ -6,6 +6,7 @@ import { loadWordsFromRepository, wordData } from "./dataLoader.js";
 import { Word, wordObjects, time, setTime, setWordObjects } from "./word.js";
 import { rebuildSpatialHash, getVisibleObjects, handleCollisions } from "./physics.js";
 import { initSearchListeners } from "./search.js";
+import { toggleMute } from "./audio.js";
 
 function initWordObjects() {
     const objs = [];
@@ -64,8 +65,14 @@ function animate(timestamp) {
 
 async function start() {
     initSearchListeners();
+
+    document
+        .getElementById("muteButton")
+        .addEventListener("click", toggleMute);
+
     await loadWordsFromRepository();
     initWordObjects();
+
     requestAnimationFrame(animate);
 }
 

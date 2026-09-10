@@ -2,6 +2,7 @@ import { config } from "./config.js";
 import { camera } from "./camera.js";
 import { spatialHash } from "./spatialHash.js";
 import { wordObjects } from "./word.js";
+import { playCollision } from "./audio.js";
 
 export function rebuildSpatialHash() {
     spatialHash.clear();
@@ -128,9 +129,12 @@ function getSupportPoint(object, direction) {
     };
 }
 
+const activeCollisions = new Set();
+
 export function handleCollisions() {
     const objects = getVisibleObjects(config.simulationPadding);
     const processed = new Set();
+    const currentCollisions = new Set();
 
     for (const a of objects) {
         const nearby = spatialHash.getNearby(a.x, a.y, 1);
@@ -146,7 +150,16 @@ export function handleCollisions() {
             processed.add(pairKey);
 
             const collision = checkCollision(a, b);
-            if (!collision) continue;
+
+            if (!collision) {
+                continue;
+            }
+
+            currentCollisions.add(pairKey);
+
+            if (!activeCollisions.has(pairKey)) {
+                playCollision();
+            }
 
             const { depth, nx, ny } = collision;
             const totalMass = a.mass + b.mass;
@@ -215,6 +228,12 @@ export function handleCollisions() {
                 b.angularVelocity +=
                     (rbx * impulseY - rby * impulseX) / b.inertia;
             }
+        }
+
+        activeCollisions.clear();
+
+        for (const pairKey of currentCollisions) {
+            activeCollisions.add(pairKey);
         }
     }
 }
