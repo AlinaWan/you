@@ -50,12 +50,24 @@ export function checkCollision(a, b) {
 
     for (const axis of axes) {
         const projectionA =
-            a.halfWidth * Math.abs(axis.x * Math.cos(a.angle) + axis.y * Math.sin(a.angle)) +
-            a.halfHeight * Math.abs(axis.x * -Math.sin(a.angle) + axis.y * Math.cos(a.angle));
+            a.halfWidth * Math.abs(
+                axis.x * Math.cos(a.angle) +
+                axis.y * Math.sin(a.angle)
+            ) +
+            a.halfHeight * Math.abs(
+                axis.x * -Math.sin(a.angle) +
+                axis.y * Math.cos(a.angle)
+            );
 
         const projectionB =
-            b.halfWidth * Math.abs(axis.x * Math.cos(b.angle) + axis.y * Math.sin(b.angle)) +
-            b.halfHeight * Math.abs(axis.x * -Math.sin(b.angle) + axis.y * Math.cos(b.angle));
+            b.halfWidth * Math.abs(
+                axis.x * Math.cos(b.angle) +
+                axis.y * Math.sin(b.angle)
+            ) +
+            b.halfHeight * Math.abs(
+                axis.x * -Math.sin(b.angle) +
+                axis.y * Math.cos(b.angle)
+            );
 
         const distance = Math.abs(dx * axis.x + dy * axis.y);
         const overlap = projectionA + projectionB - distance;
@@ -75,10 +87,44 @@ export function checkCollision(a, b) {
         }
     }
 
+    /*
+     * Approximate the contact point as the midpoint between the
+     * nearest points on the two rectangles along the collision normal.
+     */
+    const contactA = getSupportPoint(a, collisionNormal);
+    const contactB = getSupportPoint(b, {
+        x: -collisionNormal.x,
+        y: -collisionNormal.y
+    });
+
     return {
         depth: minimumOverlap,
         nx: collisionNormal.x,
-        ny: collisionNormal.y
+        ny: collisionNormal.y,
+        contactX: (contactA.x + contactB.x) * 0.5,
+        contactY: (contactA.y + contactB.y) * 0.5
+    };
+}
+
+function getSupportPoint(object, direction) {
+    const cos = Math.cos(object.angle);
+    const sin = Math.sin(object.angle);
+
+    const localX =
+        direction.x * cos +
+            direction.y * sin >= 0
+            ? object.halfWidth
+            : -object.halfWidth;
+
+    const localY =
+        -direction.x * sin +
+            direction.y * cos >= 0
+            ? object.halfHeight
+            : -object.halfHeight;
+
+    return {
+        x: object.x + localX * cos - localY * sin,
+        y: object.y + localX * sin + localY * cos
     };
 }
 
@@ -110,20 +156,64 @@ export function handleCollisions() {
             b.x += nx * depth * (a.mass / totalMass);
             b.y += ny * depth * (a.mass / totalMass);
 
-            const rvx = b.vx - a.vx;
-            const rvy = b.vy - a.vy;
+            const {
+                contactX,
+                contactY
+            } = collision;
+
+            // Vector from each center of mass to the contact point.
+            const rax = contactX - a.x;
+            const ray = contactY - a.y;
+
+            const rbx = contactX - b.x;
+            const rby = contactY - b.y;
+
+            // Velocity at the contact point, including rotational velocity.
+            //
+            // In 2D:
+            // angular velocity × radius = (-ω * ry, ω * rx)
+            const avx = a.vx - a.angularVelocity * ray;
+            const avy = a.vy + a.angularVelocity * rax;
+
+            const bvx = b.vx - b.angularVelocity * rby;
+            const bvy = b.vy + b.angularVelocity * rbx;
+
+            const rvx = bvx - avx;
+            const rvy = bvy - avy;
+
             const velocityAlongNormal = rvx * nx + rvy * ny;
 
             if (velocityAlongNormal < 0) {
+                const raCrossN = rax * ny - ray * nx;
+                const rbCrossN = rbx * ny - rby * nx;
+
+                const inverseMassSum =
+                    1 / a.mass +
+                    1 / b.mass +
+                    (raCrossN * raCrossN) / a.inertia +
+                    (rbCrossN * rbCrossN) / b.inertia;
+
                 const impulse =
                     -(1 + config.collisionRestitution) *
                     velocityAlongNormal /
-                    (1 / a.mass + 1 / b.mass);
+                    inverseMassSum;
 
-                a.vx -= (impulse / a.mass) * nx;
-                a.vy -= (impulse / a.mass) * ny;
-                b.vx += (impulse / b.mass) * nx;
-                b.vy += (impulse / b.mass) * ny;
+                const impulseX = impulse * nx;
+                const impulseY = impulse * ny;
+
+                // Linear response.
+                a.vx -= impulseX / a.mass;
+                a.vy -= impulseY / a.mass;
+
+                b.vx += impulseX / b.mass;
+                b.vy += impulseY / b.mass;
+
+                // Angular response.
+                a.angularVelocity -=
+                    (rax * impulseY - ray * impulseX) / a.inertia;
+
+                b.angularVelocity +=
+                    (rbx * impulseY - rby * impulseX) / b.inertia;
             }
         }
     }
