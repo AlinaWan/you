@@ -1,0 +1,63 @@
+name: Add Word
+
+on:
+  workflow_dispatch:
+    inputs:
+      word:
+        description: "Word to add"
+        required: true
+        type: string
+
+      tags:
+        description: "Comma-delimited tags (optional)"
+        required: false
+        type: string
+
+      note:
+        description: "Note (optional)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  add-word:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Add word
+        env:
+          WORD: ${{ inputs.word }}
+          TAGS: ${{ inputs.tags }}
+          NOTE: ${{ inputs.note }}
+        run: |
+          DATE=$(TZ='Etc/GMT+7' date '+%Y-%m-%d')
+
+          TAGS=$(printf '%s' "$TAGS" | sed 's/[[:space:]]*,[[:space:]]*/,/g; s/^[[:space:]]*//; s/[[:space:]]*$//')
+
+          printf '%s\t%s\t%s\t%s\n' \
+            "$WORD" \
+            "$DATE" \
+            "$TAGS" \
+            "$NOTE" \
+            >> words.txt
+
+          echo "WORD=$WORD" >> "$GITHUB_ENV"
+          echo "DATE=$DATE" >> "$GITHUB_ENV"
+          echo "TAGS=$TAGS" >> "$GITHUB_ENV"
+          echo "NOTE=$NOTE" >> "$GITHUB_ENV"
+
+      - name: Commit word
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: |
+            Add word: ${{ env.WORD }}
+
+            Date: ${{ env.DATE }}
+            Tags: ${{ env.TAGS }}
+            Note: ${{ env.NOTE }}
+          file_pattern: words.txt
