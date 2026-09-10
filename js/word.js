@@ -20,8 +20,8 @@ export function measureWord(text) {
     const metrics = ctx.measureText(text);
 
     return {
-        width: metrics.width + 16,
-        height: config.fontSize * 1.1
+        width: metrics.width + 4,
+        height: config.fontSize
     };
 }
 
@@ -35,6 +35,10 @@ export class Word {
         this.width = dimensions.width;
         this.height = dimensions.height;
 
+        this.halfWidth = this.width / 2;
+        this.halfHeight = this.height / 2;
+
+        // This is used for spatial-hash broad-phase lookup, not the actual collision shape
         this.boundingRadius = Math.hypot(this.width, this.height) / 2;
 
         const angle = index * 2.3999632297;

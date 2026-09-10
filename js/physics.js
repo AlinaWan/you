@@ -25,19 +25,60 @@ export function getVisibleObjects(padding) {
 export function checkCollision(a, b) {
     const dx = b.x - a.x;
     const dy = b.y - a.y;
-    const radius = a.boundingRadius + b.boundingRadius;
-    const distanceSq = dx * dx + dy * dy;
 
-    if (distanceSq > radius * radius) {
-        return null;
+    const axes = [
+        {
+            x: Math.cos(a.angle),
+            y: Math.sin(a.angle)
+        },
+        {
+            x: -Math.sin(a.angle),
+            y: Math.cos(a.angle)
+        },
+        {
+            x: Math.cos(b.angle),
+            y: Math.sin(b.angle)
+        },
+        {
+            x: -Math.sin(b.angle),
+            y: Math.cos(b.angle)
+        }
+    ];
+
+    let minimumOverlap = Infinity;
+    let collisionNormal = null;
+
+    for (const axis of axes) {
+        const projectionA =
+            a.halfWidth * Math.abs(axis.x * Math.cos(a.angle) + axis.y * Math.sin(a.angle)) +
+            a.halfHeight * Math.abs(axis.x * -Math.sin(a.angle) + axis.y * Math.cos(a.angle));
+
+        const projectionB =
+            b.halfWidth * Math.abs(axis.x * Math.cos(b.angle) + axis.y * Math.sin(b.angle)) +
+            b.halfHeight * Math.abs(axis.x * -Math.sin(b.angle) + axis.y * Math.cos(b.angle));
+
+        const distance = Math.abs(dx * axis.x + dy * axis.y);
+        const overlap = projectionA + projectionB - distance;
+
+        if (overlap <= 0) {
+            return null;
+        }
+
+        if (overlap < minimumOverlap) {
+            minimumOverlap = overlap;
+
+            const direction = dx * axis.x + dy * axis.y;
+
+            collisionNormal = direction >= 0
+                ? axis
+                : { x: -axis.x, y: -axis.y };
+        }
     }
 
-    const distance = Math.sqrt(distanceSq) || 0.001;
-
     return {
-        depth: radius - distance,
-        nx: dx / distance,
-        ny: dy / distance
+        depth: minimumOverlap,
+        nx: collisionNormal.x,
+        ny: collisionNormal.y
     };
 }
 

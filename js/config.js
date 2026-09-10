@@ -29,8 +29,8 @@ export const config = {
     minSpeed: 0.18,
     friction: 0.985,
     angularFriction: 0.96,
-    mouseForce: 1.5,
-    mouseRadius: 200,
+    mouseForce: 1.2,
+    mouseRadius: 100,
     panSpeed: 8,
     collisionRestitution: 0.6
 };
