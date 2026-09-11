@@ -308,6 +308,14 @@ export function initSearchListeners() {
         searchInput.addEventListener("input", updateSearch);
     }
 
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            searchInput.value = "";
+            resultsWrapper.classList.remove("open");
+            searchInput.blur();
+        }
+    });
+
     window.addEventListener("trackingchange", event => {
         updateTrackingButtons(event.detail.word);
     });
