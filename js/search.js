@@ -6,6 +6,35 @@ import {
     isTracking
 } from "./camera.js";
 
+const copyLinkIcon = `
+    <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+    >
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+    </svg>
+`;
+
+const checkmarkIcon = `
+    <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+    >
+        <path d="M20 6 9 17l-5-5"/>
+    </svg>
+`;
+
 const searchInput = document.getElementById("searchInput");
 const resultsWrapper = document.getElementById("resultsWrapper");
 const resultsScroll = document.getElementById("resultsScroll");
@@ -195,21 +224,7 @@ export function updateSearch() {
                                     data-word-id="${escapeHTML(item.id)}"
                                     aria-label="Copy tracking link for ${escapeHTML(item.word)}"
                                 >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        aria-hidden="true"
-                                    >
-                                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                                    </svg>
+                                    ${copyLinkIcon}
                                 </button>
 
                                 <button
@@ -342,30 +357,15 @@ export function initSearchListeners() {
             try {
                 await navigator.clipboard.writeText(url.href);
 
-                const originalIcon = copyButton.innerHTML;
+                clearTimeout(copyButton.copyTimeout);
 
-                copyButton.innerHTML = `
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                    >
-                        <path d="M20 6 9 17l-5-5"></path>
-                    </svg>
-                `;
-
+                copyButton.innerHTML = checkmarkIcon;
                 copyButton.classList.add("copied");
 
-                setTimeout(() => {
-                    copyButton.innerHTML = originalIcon;
+                copyButton.copyTimeout = setTimeout(() => {
+                    copyButton.innerHTML = copyLinkIcon;
                     copyButton.classList.remove("copied");
+                    copyButton.copyTimeout = null;
                 }, 1000);
             } catch {
                 // Clipboard access failed
