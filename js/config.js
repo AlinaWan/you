@@ -31,7 +31,8 @@ export const config = {
     angularFriction: 0.96,
     mouseForce: 1.2,
     mouseRadius: 100,
-    panSpeed: 8,
+    panSpeed: 800,
+    panFriction: -3,
     collisionRestitution: 1.0,
     collisionDebounce: 200 // Debounce in milliseconds for audio playback on collision
 };

@@ -2,7 +2,9 @@ let trackedWord = null;
 
 export const camera = {
     x: 0,
-    y: 0
+    y: 0,
+    velocityX: 0,
+    velocityY: 0
 };
 
 export function worldToScreen(x, y) {
@@ -20,6 +22,9 @@ export function screenToWorld(x, y) {
 }
 
 export function startTracking(word) {
+    camera.velocityX = 0;
+    camera.velocityY = 0;
+
     trackedWord = word;
 
     window.dispatchEvent(new CustomEvent("trackingchange", {
@@ -56,7 +61,6 @@ export function updateTracking(deltaTime) {
         return;
     }
 
-    // Frame-rate independent smoothing.
     const smoothing = 1 - Math.exp(-8 * deltaTime);
 
     camera.x += (trackedWord.x - camera.x) * smoothing;

@@ -1,5 +1,5 @@
 import { config } from "./config.js";
-import { camera, stopTracking } from "./camera.js";
+import { camera, stopTracking, isTracking } from "./camera.js";
 import { canvas } from "./canvas.js";
 
 export const keys = new Set();
@@ -60,7 +60,7 @@ window.addEventListener("keyup", event => {
     keys.delete(event.key.toLowerCase());
 });
 
-export function updateCamera() {
+export function updateCamera(deltaTime) {
     if (isTyping()) {
         return;
     }
@@ -74,16 +74,42 @@ export function updateCamera() {
     if (keys.has("d") || keys.has("arrowright")) dx += 1;
 
     if (dx !== 0 || dy !== 0) {
-        stopTracking();
+        if (isTracking()) {
+            stopTracking();
+            camera.velocityX = 0;
+            camera.velocityY = 0;
+        }
 
         const length = Math.hypot(dx, dy);
 
         dx /= length;
         dy /= length;
 
-        camera.x += dx * config.panSpeed;
-        camera.y += dy * config.panSpeed;
+        const acceleration = 1800;
+
+        camera.velocityX += dx * acceleration * deltaTime;
+        camera.velocityY += dy * acceleration * deltaTime;
+    } else {
+        const friction = Math.exp(config.panFriction * deltaTime);
+
+        camera.velocityX *= friction;
+        camera.velocityY *= friction;
     }
+
+    const speed = Math.hypot(
+        camera.velocityX,
+        camera.velocityY
+    );
+
+    if (speed > config.panSpeed) {
+        const scale = config.panSpeed / speed;
+
+        camera.velocityX *= scale;
+        camera.velocityY *= scale;
+    }
+
+    camera.x += camera.velocityX * deltaTime;
+    camera.y += camera.velocityY * deltaTime;
 }
 
 export function updateMouse(event) {

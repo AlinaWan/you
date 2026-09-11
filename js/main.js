@@ -30,7 +30,7 @@ function animate(timestamp) {
 
     setTime(time + delta);
 
-    updateCamera();
+    updateCamera(delta);
     updateTracking(delta);
 
     if (mouse.lastX > -1000) {
