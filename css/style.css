@@ -93,6 +93,7 @@ canvas {
     display: grid;
     grid-template-rows: 0fr;
     opacity: 0;
+    overflow: hidden;
     transition: grid-template-rows 280ms cubic-bezier(.2, .8, .2, 1), opacity 180ms ease;
 }
 

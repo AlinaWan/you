@@ -88,7 +88,6 @@ export function updateSearch() {
 
     if (!query) {
         resultsWrapper.classList.remove("open");
-        resultsScroll.innerHTML = "";
         return;
     }
 
@@ -132,6 +131,8 @@ export function updateSearch() {
         .map(result => {
             const item = result.item;
             const key = normalize(item.word);
+            const wordObj = wordObjects[result.index];
+            const tracking = isTracking(wordObj);
 
             let duplicateBadge = "";
 
@@ -189,33 +190,35 @@ export function updateSearch() {
                             ` : ""}
 
                             <button
-                                class="trackButton"
-                                type="button"
-                                data-track-index="${result.index}"
-                                aria-label="Track ${escapeHTML(item.word)}"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    aria-hidden="true"
-                                >
+                            class="trackButton ${tracking ? "tracking" : ""}"
+                            type="button"
+                            data-track-index="${result.index}"
+                            aria-label="${tracking ? `Stop tracking ${escapeHTML(item.word)}` : `Track ${escapeHTML(item.word)}`}"
+                        >
+                            ${tracking ? `
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-6.94"></path>
+                                    <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.77 21.77 0 0 1-2.06 3.19"></path>
+                                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
+                                </svg>
+                            ` : `
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>
                                 </svg>
-                            </button>
-                        </div>
+                            `}
+                        </button>
                     </div>
                 </div>
-            `;
+            </div>
+        `;
         })
         .join("");
+
+    requestAnimationFrame(() => {
+        resultsWrapper.classList.add("open");
+    });
 }
 
 function updateTrackingButtons(trackedWord) {
