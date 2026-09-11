@@ -1,7 +1,7 @@
 import { config } from "./config.js";
 import { ctx } from "./canvas.js";
 import { mouse, updateCamera } from "./controls.js";
-import { camera, updateTracking } from "./camera.js";
+import { camera, updateTracking, startTracking } from "./camera.js";
 import { loadWordsFromRepository, wordData } from "./dataLoader.js";
 import { Word, wordObjects, time, setTime, setWordObjects } from "./word.js";
 import { rebuildSpatialHash, getVisibleObjects, handleCollisions } from "./physics.js";
@@ -63,6 +63,25 @@ function animate(timestamp) {
     requestAnimationFrame(animate);
 }
 
+function trackWordFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const wordId = params.get("track");
+
+    if (!wordId) {
+        return;
+    }
+
+    const word = wordObjects.find(
+        word => word.id === wordId
+    );
+
+    if (!word) {
+        return;
+    }
+
+    startTracking(word);
+}
+
 async function start() {
     initSearchListeners();
 
@@ -72,6 +91,8 @@ async function start() {
 
     await loadWordsFromRepository();
     initWordObjects();
+
+    trackWordFromUrl();
 
     requestAnimationFrame(animate);
 }

@@ -188,27 +188,51 @@ export function updateSearch() {
                                     </span>
                                 </div>
                             ` : ""}
+                            <div class="resultActions">
+                                <button
+                                    class="copyButton"
+                                    type="button"
+                                    data-word-id="${escapeHTML(item.id)}"
+                                    aria-label="Copy tracking link for ${escapeHTML(item.word)}"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        aria-hidden="true"
+                                    >
+                                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                    </svg>
+                                </button>
 
-                            <button
-                            class="trackButton ${tracking ? "tracking" : ""}"
-                            type="button"
-                            data-track-index="${result.index}"
-                            aria-label="${tracking ? `Stop tracking ${escapeHTML(item.word)}` : `Track ${escapeHTML(item.word)}`}"
-                        >
-                            ${tracking ? `
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                    <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-6.94"></path>
-                                    <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.77 21.77 0 0 1-2.06 3.19"></path>
-                                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                                    <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
-                                </svg>
-                            ` : `
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                </svg>
-                            `}
-                        </button>
+                                <button
+                                    class="trackButton ${tracking ? "tracking" : ""}"
+                                    type="button"
+                                    data-word-id="${escapeHTML(item.id)}"
+                                    aria-label="${tracking ? `Stop tracking ${escapeHTML(item.word)}` : `Track ${escapeHTML(item.word)}`}"
+                                >
+                                ${tracking ? `
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-6.94"></path>
+                                        <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.77 21.77 0 0 1-2.06 3.19"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                        <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
+                                    </svg>
+                                ` : `
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                `}
+                                </button>
+                            </div>
                     </div>
                 </div>
             </div>
@@ -223,8 +247,11 @@ export function updateSearch() {
 
 function updateTrackingButtons(trackedWord) {
     document.querySelectorAll(".trackButton").forEach(button => {
-        const index = Number(button.dataset.trackIndex);
-        const word = wordObjects[index];
+        const wordId = button.dataset.wordId;
+        const word = wordObjects.find(
+            word => word.id === wordId
+        );
+
         const tracking = word === trackedWord;
 
         button.innerHTML = tracking
@@ -289,7 +316,56 @@ export function initSearchListeners() {
         return;
     }
 
-    resultsScroll.addEventListener("click", event => {
+    resultsScroll.addEventListener("click", async event => {
+        const copyButton = event.target.closest(".copyButton");
+
+        if (copyButton) {
+            event.stopPropagation();
+            copyButton.blur();
+
+            const wordId = copyButton.dataset.wordId;
+            if (!wordId) return;
+
+            const url = new URL(window.location.href);
+            url.search = "";
+            url.hash = "";
+            url.searchParams.set("track", wordId);
+
+            try {
+                await navigator.clipboard.writeText(url.href);
+
+                const originalIcon = copyButton.innerHTML;
+
+                copyButton.innerHTML = `
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+                        <path d="M20 6 9 17l-5-5"></path>
+                    </svg>
+                `;
+
+                copyButton.classList.add("copied");
+
+                setTimeout(() => {
+                    copyButton.innerHTML = originalIcon;
+                    copyButton.classList.remove("copied");
+                }, 1000);
+            } catch {
+                // Clipboard access failed
+            }
+
+            return;
+        }
+
         const trackButton = event.target.closest(".trackButton");
 
         if (trackButton) {
@@ -298,8 +374,10 @@ export function initSearchListeners() {
             // Prevent the button from retaining keyboard focus.
             trackButton.blur();
 
-            const index = Number(trackButton.dataset.trackIndex);
-            const word = wordObjects[index];
+            const wordId = trackButton.dataset.wordId;
+            const word = wordObjects.find(
+                word => word.id === wordId
+            );
 
             if (!word) {
                 return;

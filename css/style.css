@@ -86,9 +86,9 @@ canvas {
 
 
 /*
-         * The results container always exists, but when empty it
-         * smoothly collapses upward.
-         */
+ * The results container always exists, but when empty it
+ * smoothly collapses upward.
+ */
 #resultsWrapper {
     display: grid;
     grid-template-rows: 0fr;
@@ -207,17 +207,21 @@ canvas {
     color: #777;
 }
 
-.detailsInner {
-    position: relative;
+.resultActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 14px;
 }
 
+.copyButton,
 .trackButton {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 30px;
     height: 26px;
-    margin: 14px 0 0 auto;
+    margin: 0;
     padding: 0;
     border: 1px solid #333;
     border-radius: 5px;
@@ -227,6 +231,7 @@ canvas {
     transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
+    .copyButton:hover,
     .trackButton:hover {
         color: #ccc;
         border-color: #555;
@@ -237,19 +242,32 @@ canvas {
         border-color: #777;
     }
 
+    .copyButton:focus,
     .trackButton:focus {
         outline: none;
     }
 
+    .copyButton:focus-visible,
     .trackButton:focus-visible {
         outline: 1px solid #666;
         outline-offset: 2px;
     }
 
+    .copyButton svg,
     .trackButton svg {
         width: 16px;
         height: 16px;
     }
+
+    .copyButton.copied {
+        color: #aaa;
+        border-color: #555;
+    }
+
+        .copyButton.copied svg {
+            width: 16px;
+            height: 16px;
+        }
 
 /* =========================================================
            MUTE BUTTON

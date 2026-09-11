@@ -28,6 +28,7 @@ export function measureWord(text) {
 export class Word {
     constructor(data, index) {
         this.data = data;
+        this.id = data.id;
         this.text = data.word;
         this.index = index;
 

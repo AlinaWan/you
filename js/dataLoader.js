@@ -9,12 +9,14 @@ export async function loadWordsFromRepository() {
         wordData = [
             // Duplicate words to test #N handling
             {
+                id: "testworda-1",
                 word: "TestWordA",
                 date: "2026-01-01",
                 tags: ["test", "dev"],
                 description: "Development test word A1."
             },
             {
+                id: "testworda-2",
                 word: "TestWordA",
                 date: "2026-01-02",
                 tags: ["test", "dev"],
@@ -22,24 +24,28 @@ export async function loadWordsFromRepository() {
             },
             // Additional unique words for testing
             {
+                id: "testword1",
                 word: "TestWord1",
                 date: "2026-01-03",
                 tags: ["test", "dev"],
                 description: "Development test word 1."
             },
             {
+                id: "testword2",
                 word: "TestWord2",
                 date: "2026-01-04",
                 tags: ["test", "dev"],
                 description: "Development test word 2."
             },
             {
+                id: "testword3",
                 word: "TestWord3",
                 date: "2026-01-05",
                 tags: ["test", "dev"],
                 description: "Development test word 3."
             }
         ];
+
         return;
     }
 
@@ -63,14 +69,18 @@ export async function loadWordsFromRepository() {
             const parts = line.split("\t");
 
             return {
-                word: (parts[0] || "").trim(),
-                date: (parts[1] || "").trim(),
-                tags: (parts[2] || "")
+                id: (parts[0] || "").trim(),
+                word: (parts[1] || "").trim(),
+                date: (parts[2] || "").trim(),
+                tags: (parts[3] || "")
                     .split(",")
                     .map(tag => tag.trim())
                     .filter(Boolean),
-                description: (parts[3] || "").trim()
+                description: (parts[4] || "").trim()
             };
         })
-        .filter(item => item.word.length > 0);
+        .filter(item =>
+            item.id.length > 0 &&
+            item.word.length > 0
+        );
 }
