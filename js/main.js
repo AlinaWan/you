@@ -7,6 +7,7 @@ import { Word, wordObjects, time, setTime, setWordObjects } from "./word.js";
 import { rebuildSpatialHash, getVisibleObjects, handleCollisions } from "./physics.js";
 import { initSearchListeners } from "./search.js";
 import { toggleMute } from "./audio.js";
+import { updateWordCursor } from "./wordCursor.js";
 
 function initWordObjects() {
     const objs = [];
@@ -42,6 +43,8 @@ function animate(timestamp) {
     mouse.lastY = mouse.y;
     mouse.vx *= 0.8;
     mouse.vy *= 0.8;
+
+    updateWordCursor();
 
     rebuildSpatialHash();
 

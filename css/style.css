@@ -34,12 +34,29 @@ canvas {
     width: 100%;
     height: 100%;
     display: block;
-}
-
-canvas {
     touch-action: none;
+    cursor: none;
 }
 
+#wordCursor {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+    z-index: 1000;
+    transform: translate(-50%, -50%);
+    transition: color 80ms linear;
+    color: #777;
+}
+
+    #wordCursor svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+        fill: currentColor;
+    }
 
 /* =========================================================
            SEARCH
