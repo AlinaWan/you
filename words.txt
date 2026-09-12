@@ -17,3 +17,4 @@ ed47b43baba2	family	2026-09-11	us,dream,longing,bitter	Every time I see an SUV w
 41622116cbaa	time	2026-09-12	bitter,regret,longing	It slips through my fingers like mist, but nothing ever seems to change in the end.
 3111b9599b9f	children	2026-09-12	dream,longing,bitter	The ones we'll never have, in a house we'll never own.
 029deb1050dd	ring	2026-09-12	dream,longing	Something I'll never get.
+05d3d86397a3	cherry	2026-09-12	food,taste,color	Somehow they always taste more bitter than sweet.
