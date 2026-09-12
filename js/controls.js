@@ -10,12 +10,16 @@ export const mouse = {
     vx: 0,
     vy: 0,
     lastX: -10000,
-    lastY: -10000
+    lastY: -10000,
+    active: false
 };
 
 const activePointers = new Map();
 
 let previousTouchCenter = null;
+
+const TOUCH_CURSOR_DELAY = 120;
+let cursorActivationTimer = null;
 
 export function isTyping() {
     const active = document.activeElement;
@@ -45,9 +49,16 @@ window.addEventListener("keydown", event => {
     }
 
     const key = event.key.toLowerCase();
+
     const movementKeys = [
-        "w", "a", "s", "d",
-        "arrowup", "arrowdown", "arrowleft", "arrowright"
+        "w",
+        "a",
+        "s",
+        "d",
+        "arrowup",
+        "arrowdown",
+        "arrowleft",
+        "arrowright"
     ];
 
     if (movementKeys.includes(key)) {
@@ -117,6 +128,40 @@ export function updateMouse(event) {
 
     mouse.x = event.clientX - rect.left;
     mouse.y = event.clientY - rect.top;
+    mouse.active = true;
+}
+
+export function deactivateMouse() {
+    mouse.active = false;
+    mouse.x = -10000;
+    mouse.y = -10000;
+    mouse.vx = 0;
+    mouse.vy = 0;
+}
+
+function cancelCursorActivation() {
+    if (cursorActivationTimer !== null) {
+        clearTimeout(cursorActivationTimer);
+        cursorActivationTimer = null;
+    }
+}
+
+function scheduleCursorActivation() {
+    cancelCursorActivation();
+
+    cursorActivationTimer = setTimeout(() => {
+        cursorActivationTimer = null;
+
+        if (activePointers.size !== 1) {
+            return;
+        }
+
+        const pointer = activePointers.values().next().value;
+
+        if (pointer) {
+            updateMouse(pointer);
+        }
+    }, TOUCH_CURSOR_DELAY);
 }
 
 function getTouchCenter() {
@@ -145,13 +190,31 @@ function updateTouchInteraction() {
     if (pointerCount === 1) {
         const pointer = activePointers.values().next().value;
 
-        updateMouse(pointer);
+        /*
+         * If the cursor is already active, this is normal
+         * single-finger movement.
+         *
+         * If it is inactive, activation is being handled by
+         * scheduleCursorActivation().
+         */
+        if (mouse.active) {
+            updateMouse(pointer);
+        }
 
         previousTouchCenter = null;
         return;
     }
 
-    if (pointerCount === 2) {
+    if (pointerCount >= 2) {
+        /*
+         * A second finger means this is now a pan.
+         *
+         * Cancel any pending single-finger cursor activation
+         * so the cursor never flashes underneath the pan.
+         */
+        cancelCursorActivation();
+        deactivateMouse();
+
         const center = getTouchCenter();
 
         if (!center) {
@@ -178,6 +241,26 @@ canvas.addEventListener("pointerdown", event => {
     activePointers.set(event.pointerId, event);
 
     canvas.setPointerCapture(event.pointerId);
+
+    const pointerCount = activePointers.size;
+
+    if (pointerCount === 1) {
+        /*
+         * Don't show the cursor immediately.
+         *
+         * This gives a second finger a short window to arrive
+         * and turn the interaction into a two-finger pan.
+         */
+        deactivateMouse();
+        scheduleCursorActivation();
+    } else {
+        /*
+         * Second finger arrived before the delay expired,
+         * so this is definitely a two-finger interaction.
+         */
+        cancelCursorActivation();
+        deactivateMouse();
+    }
 
     updateTouchInteraction();
 
@@ -208,13 +291,35 @@ function endPointer(event) {
 
     activePointers.delete(event.pointerId);
 
-    if (activePointers.size < 2) {
-        previousTouchCenter = null;
-    }
+    const pointerCount = activePointers.size;
 
-    if (activePointers.size === 1) {
-        const pointer = activePointers.values().next().value;
-        updateMouse(pointer);
+    if (pointerCount >= 2) {
+        /*
+         * Still panning with two or more fingers.
+         */
+        cancelCursorActivation();
+
+        previousTouchCenter = getTouchCenter();
+        deactivateMouse();
+    } else if (pointerCount === 1) {
+        /*
+         * One finger remains after a two-finger pan.
+         *
+         * Don't immediately show the cursor because the user
+         * may be lifting the second finger slightly before the
+         * first one. Give another finger 120ms to arrive.
+         */
+        previousTouchCenter = null;
+        deactivateMouse();
+        scheduleCursorActivation();
+    } else {
+        /*
+         * No fingers remain.
+         */
+        cancelCursorActivation();
+
+        previousTouchCenter = null;
+        deactivateMouse();
     }
 
     if (canvas.hasPointerCapture(event.pointerId)) {
@@ -232,14 +337,14 @@ canvas.addEventListener("pointerleave", event => {
         return;
     }
 
-    mouse.x = -10000;
-    mouse.y = -10000;
-    mouse.vx = 0;
-    mouse.vy = 0;
+    deactivateMouse();
 });
 
 window.addEventListener("blur", () => {
     activePointers.clear();
     previousTouchCenter = null;
     keys.clear();
+
+    cancelCursorActivation();
+    deactivateMouse();
 });

@@ -20,12 +20,11 @@ const NEAR_COLOR = {
 };
 
 export function updateWordCursor() {
-    if (mouse.x < -1000 || mouse.y < -1000) {
+    if (!mouse.active) {
         wordCursor.style.display = "none";
         return;
     }
 
-    wordCursor.style.display = "block";
     wordCursor.style.left = `${mouse.x}px`;
     wordCursor.style.top = `${mouse.y}px`;
 
@@ -53,6 +52,7 @@ export function updateWordCursor() {
 
     if (closestDistanceSq === Infinity) {
         setCursorColor(0);
+        wordCursor.style.display = "block";
         return;
     }
 
@@ -72,6 +72,10 @@ export function updateWordCursor() {
     const eased = proximity * proximity;
 
     setCursorColor(eased);
+
+    // Only reveal the cursor after its position and color
+    // have been updated for this frame.
+    wordCursor.style.display = "block";
 }
 
 function setCursorColor(amount) {

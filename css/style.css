@@ -47,7 +47,7 @@ canvas {
     pointer-events: none;
     z-index: 1000;
     transform: translate(-50%, -50%);
-    transition: color 80ms linear;
+    transition: color 80ms linear; /* Transition makes it smoother than displaying color exactly from proximity to a word object per frame */
     color: #777;
 }
 
