@@ -32,3 +32,4 @@ b7966827883d	royale high	2026-09-13	game,memory,miss,nostalgia	The game I used t
 48438a7775b7	silence	2026-09-13	sound,memory	It hurts more than the breakup.
 47ce585e49ec	heartbreak	2026-09-13	you,still	Was it worth it?
 e460be974d0c	sunset	2026-09-13	place,nostalgia,you,love	The golden ones remind me of you.
+462e5d982233	why	2026-09-13	me,you	Why is this happening to me?
