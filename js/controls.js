@@ -87,8 +87,9 @@ export function updateCamera(deltaTime) {
     if (dx !== 0 || dy !== 0) {
         if (isTracking()) {
             stopTracking();
-            camera.velocityX = 0;
-            camera.velocityY = 0;
+
+            camera.velocityX *= 0.8;
+            camera.velocityY *= 0.8;
         }
 
         const length = Math.hypot(dx, dy);

@@ -63,6 +63,18 @@ export function updateTracking(deltaTime) {
 
     const smoothing = 1 - Math.exp(-8 * deltaTime);
 
-    camera.x += (trackedWord.x - camera.x) * smoothing;
-    camera.y += (trackedWord.y - camera.y) * smoothing;
+    const targetX = trackedWord.x;
+    const targetY = trackedWord.y;
+
+    const dx = (targetX - camera.x) * smoothing;
+    const dy = (targetY - camera.y) * smoothing;
+
+    camera.x += dx;
+    camera.y += dy;
+
+    // Preserve the tracking movement as camera velocity.
+    if (deltaTime > 0) {
+        camera.velocityX = dx / deltaTime;
+        camera.velocityY = dy / deltaTime;
+    }
 }
