@@ -17,6 +17,10 @@ export const mouse = {
 const activePointers = new Map();
 
 let previousTouchCenter = null;
+let isTouchPanning = false;
+
+let touchVelocityX = 0;
+let touchVelocityY = 0;
 
 const TOUCH_CURSOR_DELAY = 120;
 let cursorActivationTimer = null;
@@ -73,6 +77,87 @@ window.addEventListener("keyup", event => {
 
 export function updateCamera(deltaTime) {
     if (isTyping()) {
+        return;
+    }
+
+    /*
+     * Sample two-finger touch movement once per animation frame.
+     *
+     * This is intentionally done here instead of pointermove.
+     * A browser does not send pointermove events while a finger
+     * is completely stationary, so sampling every frame lets us
+     * correctly detect that the current velocity has reached zero.
+     */
+    if (isTouchPanning) {
+        const center = getTouchCenter();
+
+        if (center === null) {
+            touchVelocityX = 0;
+            touchVelocityY = 0;
+            return;
+        }
+
+        if (previousTouchCenter === null || deltaTime <= 0) {
+            previousTouchCenter = center;
+
+            touchVelocityX = 0;
+            touchVelocityY = 0;
+
+            return;
+        }
+
+        const dx = center.x - previousTouchCenter.x;
+        const dy = center.y - previousTouchCenter.y;
+
+        /*
+         * Move the camera opposite to the finger movement.
+         */
+        camera.x -= dx;
+        camera.y -= dy;
+
+        /*
+         * Calculate the velocity from this exact animation
+         * frame.
+         *
+         * If the fingers have stopped moving:
+         *
+         *     dx = 0
+         *     dy = 0
+         *
+         * therefore the velocity becomes exactly zero.
+         */
+        touchVelocityX = -dx / deltaTime;
+        touchVelocityY = -dy / deltaTime;
+
+        /*
+         * Limit touch velocity to the same maximum speed used
+         * by keyboard/mouse camera movement.
+         */
+        const speed = Math.hypot(
+            touchVelocityX,
+            touchVelocityY
+        );
+
+        if (speed > config.panSpeed) {
+            const scale = config.panSpeed / speed;
+
+            touchVelocityX *= scale;
+            touchVelocityY *= scale;
+        }
+
+        /*
+         * Moving the camera manually cancels tracking.
+         */
+        if (dx !== 0 || dy !== 0) {
+            stopTracking();
+        }
+
+        previousTouchCenter = center;
+
+        /*
+         * Touch panning completely owns the camera this frame.
+         * Do not also apply keyboard movement or camera inertia.
+         */
         return;
     }
 
@@ -206,34 +291,37 @@ function updateTouchInteraction() {
             updateMouse(pointer);
         }
 
+        /*
+         * A single finger is not a camera pan.
+         *
+         * If this was previously a two-finger pan, the gesture
+         * has ended as soon as one finger remains.
+         */
         previousTouchCenter = null;
+        isTouchPanning = false;
+
         return;
     }
 
     if (pointerCount >= 2) {
         /*
-         * A second finger means this is now a pan.
+         * Two or more fingers means camera panning.
          *
-         * Cancel any pending single-finger cursor activation
-         * so the cursor never flashes underneath the pan.
+         * Camera movement and velocity are sampled from the
+         * animation loop rather than pointermove events so that
+         * velocity becomes zero when the fingers stop moving.
          */
+        isTouchPanning = true;
+
         cancelCursorActivation();
         deactivateMouse();
 
-        const center = getTouchCenter();
+        if (previousTouchCenter === null) {
+            previousTouchCenter = getTouchCenter();
 
-        if (!center) {
-            return;
+            touchVelocityX = 0;
+            touchVelocityY = 0;
         }
-
-        if (previousTouchCenter) {
-            stopTracking();
-
-            camera.x -= center.x - previousTouchCenter.x;
-            camera.y -= center.y - previousTouchCenter.y;
-        }
-
-        previousTouchCenter = center;
     }
 }
 
@@ -265,6 +353,26 @@ canvas.addEventListener("pointerdown", event => {
          */
         cancelCursorActivation();
         deactivateMouse();
+
+        /*
+         * Two fingers means a new pan is beginning.
+         *
+         * Don't carry keyboard/tracking/inertial velocity into
+         * the new gesture.
+         */
+        if (pointerCount === 2) {
+            camera.velocityX = 0;
+            camera.velocityY = 0;
+
+            touchVelocityX = 0;
+            touchVelocityY = 0;
+
+            /*
+             * Start measuring the two-finger gesture from the current
+             * center rather than from the position of the first finger.
+             */
+            previousTouchCenter = getTouchCenter();
+        }
     }
 
     updateTouchInteraction();
@@ -294,6 +402,8 @@ function endPointer(event) {
         return;
     }
 
+    const wasTouchPanning = isTouchPanning;
+
     activePointers.delete(event.pointerId);
 
     const pointerCount = activePointers.size;
@@ -303,27 +413,50 @@ function endPointer(event) {
          * Still panning with two or more fingers.
          */
         cancelCursorActivation();
+        deactivateMouse();
 
         previousTouchCenter = getTouchCenter();
-        deactivateMouse();
     } else if (pointerCount === 1) {
         /*
-         * One finger remains after a two-finger pan.
+         * Two-finger pan has ended.
          *
-         * Don't immediately show the cursor because the user
-         * may be lifting the second finger slightly before the
-         * first one. Give another finger 120ms to arrive.
+         * Treat 2 → 1 exactly like 2 → 0:
+         * transfer the current touch velocity to the
+         * camera and let normal camera friction take over.
          */
         previousTouchCenter = null;
+        isTouchPanning = false;
+
+        if (wasTouchPanning) {
+            camera.velocityX = touchVelocityX;
+            camera.velocityY = touchVelocityY;
+        }
+
+        touchVelocityX = 0;
+        touchVelocityY = 0;
+
         deactivateMouse();
         scheduleCursorActivation();
     } else {
         /*
          * No fingers remain.
+         *
+         * End the two-finger pan and transfer the current
+         * touch velocity to the camera for inertia.
          */
         cancelCursorActivation();
 
         previousTouchCenter = null;
+        isTouchPanning = false;
+
+        if (wasTouchPanning) {
+            camera.velocityX = touchVelocityX;
+            camera.velocityY = touchVelocityY;
+        }
+
+        touchVelocityX = 0;
+        touchVelocityY = 0;
+
         deactivateMouse();
     }
 
@@ -347,7 +480,13 @@ canvas.addEventListener("pointerleave", event => {
 
 window.addEventListener("blur", () => {
     activePointers.clear();
+
     previousTouchCenter = null;
+    isTouchPanning = false;
+
+    touchVelocityX = 0;
+    touchVelocityY = 0;
+
     keys.clear();
 
     cancelCursorActivation();
