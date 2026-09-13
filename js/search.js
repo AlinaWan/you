@@ -36,6 +36,7 @@ const checkmarkIcon = `
 `;
 
 const searchInput = document.getElementById("searchInput");
+const clearSearchButton = document.getElementById("clearSearchButton");
 const resultsWrapper = document.getElementById("resultsWrapper");
 const resultsScroll = document.getElementById("resultsScroll");
 
@@ -321,15 +322,33 @@ function updateTrackingButtons(trackedWord) {
 export function initSearchListeners() {
     if (searchInput) {
         searchInput.addEventListener("input", updateSearch);
+
+        searchInput.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                searchInput.blur();
+            }
+        });
     }
+
+    const clearSearch = () => {
+        searchInput.value = "";
+        resultsWrapper.classList.remove("open");
+        searchInput.blur();
+    };
 
     document.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
-            searchInput.value = "";
-            resultsWrapper.classList.remove("open");
-            searchInput.blur();
+            clearSearch();
         }
     });
+
+    if (clearSearchButton) {
+        clearSearchButton.addEventListener("click", () => {
+            clearSearchButton.blur();
+            clearSearch();
+        });
+    }
 
     window.addEventListener("trackingchange", event => {
         updateTrackingButtons(event.detail.word);
