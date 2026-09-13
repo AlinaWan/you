@@ -28,3 +28,4 @@ a8b06a948489	misogyny	2026-09-13		All roads lead to it.
 7adf8b4b02f5	sorry	2026-09-13	phrase,regret	Something I say too often, but it never seems to be enough.
 2bd9895e743b	thank you	2026-09-13	phrase,regret,love,memory	For everything, even when I didn't deserve it.
 b7966827883d	royale high	2026-09-13	game,memory,miss,nostalgia	The game I used to play every day, but it's not the same without you.
+55acd8c2888e	crush	2026-09-13	you,person,love	It always starts with swearing to myself that I don't have one.
