@@ -76,10 +76,6 @@ window.addEventListener("keyup", event => {
 });
 
 export function updateCamera(deltaTime) {
-    if (isTyping()) {
-        return;
-    }
-
     /*
      * Sample two-finger touch movement once per animation frame.
      *
