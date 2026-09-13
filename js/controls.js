@@ -165,6 +165,10 @@ function scheduleCursorActivation() {
     }, TOUCH_CURSOR_DELAY);
 }
 
+export function getPointerCount() {
+    return activePointers.size;
+}
+
 function getTouchCenter() {
     const rect = canvas.getBoundingClientRect();
     const pointers = [...activePointers.values()];

@@ -56,6 +56,10 @@ export function isTracking(word = null) {
     return trackedWord === word;
 }
 
+export function getTrackedWord() {
+    return trackedWord;
+}
+
 export function updateTracking(deltaTime) {
     if (!trackedWord) {
         return;

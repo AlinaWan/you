@@ -8,6 +8,7 @@ import { rebuildSpatialHash, getVisibleObjects, handleCollisions } from "./physi
 import { initSearchListeners } from "./search.js";
 import { toggleMute } from "./audio.js";
 import { updateWordCursor } from "./wordCursor.js";
+import { initDebug, updateDebug } from "./debug.js";
 
 function initWordObjects() {
     const objs = [];
@@ -63,6 +64,8 @@ function animate(timestamp) {
         word.draw();
     }
 
+    updateDebug(delta, visible);
+
     requestAnimationFrame(animate);
 }
 
@@ -87,6 +90,7 @@ function trackWordFromUrl() {
 
 async function start() {
     initSearchListeners();
+    initDebug();
 
     document
         .getElementById("muteButton")
