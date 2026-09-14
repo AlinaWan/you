@@ -9,7 +9,7 @@ npx serve .
 
 ### Rendering README
 ```powershell
-npm install --no-save playwright
+npm install --no-save playwright@1.63.0
 npx playwright install --with-deps chromium
 node .github/scripts/renderReadme.js
 ```
