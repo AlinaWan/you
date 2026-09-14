@@ -56,3 +56,4 @@ fe039eb5d0e6	special	2026-09-14	you,love,unrequited	You were to me; I wasn't to 
 dda04fc7ce07	world	2026-09-14	you,love	It doesn't revolve around you, but mine does.
 3d99b56f6ac2	complacency	2026-09-14		
 447d492de94e	apathy	2026-09-14		
+ff827d7975b0	lassitude	2026-09-14		
