@@ -62,16 +62,35 @@ export class Word {
 
         this.floatOffset = Math.random() * Math.PI * 2;
         this.floatFrequency = 0.7 + Math.random() * 0.5;
+
+        this.debug = {
+            currentForceX: 0,
+            currentForceY: 0,
+
+            mouseForceX: 0,
+            mouseForceY: 0
+        };
     }
 
     update() {
+        this.debug.currentForceX = 0;
+        this.debug.currentForceY = 0;
+        this.debug.mouseForceX = 0;
+        this.debug.mouseForceY = 0;
+
         const currentAngle =
             Math.sin(this.x * 0.0015 + time * 0.4) *
             Math.cos(this.y * 0.0015 + time * 0.3) *
             Math.PI * 2;
 
-        this.vx += Math.cos(currentAngle) * config.currentSpeed;
-        this.vy += Math.sin(currentAngle) * config.currentSpeed;
+        this.debug.currentForceX =
+            Math.cos(currentAngle) * config.currentSpeed;
+
+        this.debug.currentForceY =
+            Math.sin(currentAngle) * config.currentSpeed;
+
+        this.vx += this.debug.currentForceX;
+        this.vy += this.debug.currentForceY;
 
         if (mouse.x > -1000) {
             const mouseWorld = screenToWorld(mouse.x, mouse.y);
@@ -92,8 +111,14 @@ export class Word {
                 const dragX = mouse.vx * factor * 0.2;
                 const dragY = mouse.vy * factor * 0.2;
 
-                this.vx += (nx * push + dragX) / this.mass;
-                this.vy += (ny * push + dragY) / this.mass;
+                const forceX = nx * push + dragX;
+                const forceY = ny * push + dragY;
+
+                this.debug.mouseForceX = forceX / this.mass;
+                this.debug.mouseForceY = forceY / this.mass;
+
+                this.vx += this.debug.mouseForceX;
+                this.vy += this.debug.mouseForceY;
 
                 const torque = (dragX * -ny + dragY * nx) * this.width * 0.02;
                 this.angularVelocity += torque / this.inertia;

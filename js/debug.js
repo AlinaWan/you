@@ -1,37 +1,297 @@
-import {
-    camera,
-    isTracking,
-    getTrackedWord,
-    screenToWorld
-} from "./camera.js";
-
-import {
-    keys,
-    mouse,
-    getPointerCount
-} from "./controls.js";
-
-import {
-    wordObjects,
-    getVisibleObjects
-} from "./word.js";
-
-import {
-    spatialHash
-} from "./spatialHash.js";
+import { camera, isTracking, getTrackedWord, screenToWorld, worldToScreen } from "./camera.js";
+import { config } from "./config.js";
+import { ctx } from "./canvas.js";
+import { keys, mouse, getPointerCount } from "./controls.js";
+import { wordObjects, getVisibleObjects } from "./word.js";
+import { spatialHash } from "./spatialHash.js";
+import { debugCollisions } from "./physics.js";
 
 const params = new URLSearchParams(window.location.search);
 
+const debugModes = new Set(
+    (params.get("debug") ?? "")
+        .split(",")
+        .map(value => value.trim().toLowerCase())
+        .filter(Boolean)
+);
+
+export const debugStats =
+    debugModes.has("stats");
+
+export const debugPhysics =
+    debugModes.has("physics");
+
+export const debugHash =
+    debugModes.has("hash");
+
 export const debugEnabled =
-    params.get("debug") === "true" || params.get("debug") === "1";
+    debugStats ||
+    debugPhysics ||
+    debugHash;
 
 let debugElement = null;
 
 let fps = 0;
 let frameTime = 0;
 
+function drawHitbox(word) {
+    const screen = worldToScreen(word.x, word.y);
+
+    ctx.save();
+
+    ctx.translate(screen.x, screen.y);
+    ctx.rotate(word.angle);
+
+    ctx.strokeStyle = "rgba(255, 255, 0, 0.7)";
+    ctx.lineWidth = 1;
+
+    ctx.strokeRect(
+        -word.halfWidth,
+        -word.halfHeight,
+        word.width,
+        word.height
+    );
+
+    ctx.restore();
+}
+
+function drawBoundingRadius(word) {
+    const screen = worldToScreen(word.x, word.y);
+
+    ctx.beginPath();
+
+    ctx.arc(
+        screen.x,
+        screen.y,
+        word.boundingRadius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.strokeStyle = "rgba(0, 180, 255, 0.35)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+}
+
+function drawCenter(word) {
+    const screen = worldToScreen(word.x, word.y);
+
+    ctx.beginPath();
+    ctx.arc(screen.x, screen.y, 2, 0, Math.PI * 2);
+
+    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+    ctx.fill();
+}
+
+function drawVector(x, y, vx, vy, scale, color) {
+    const endX = x + vx * scale;
+    const endY = y + vy * scale;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(endX, endY);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    const angle = Math.atan2(vy, vx);
+    const headLength = 6;
+
+    ctx.beginPath();
+    ctx.moveTo(endX, endY);
+    ctx.lineTo(
+        endX - Math.cos(angle - Math.PI / 6) * headLength,
+        endY - Math.sin(angle - Math.PI / 6) * headLength
+    );
+    ctx.lineTo(
+        endX - Math.cos(angle + Math.PI / 6) * headLength,
+        endY - Math.sin(angle + Math.PI / 6) * headLength
+    );
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+}
+
+function drawVelocity(word) {
+    const screen = worldToScreen(word.x, word.y);
+
+    drawVector(
+        screen.x,
+        screen.y,
+        word.vx,
+        word.vy,
+        15,
+        "rgba(255, 255, 255, 0.7)"
+    );
+}
+
+function drawCurrentForce(word) {
+    const screen = worldToScreen(word.x, word.y);
+
+    drawVector(
+        screen.x,
+        screen.y,
+        word.debug.currentForceX,
+        word.debug.currentForceY,
+        30,
+        "rgba(100, 180, 255, 0.8)"
+    );
+}
+
+function drawMouseForce(word) {
+    const screen = worldToScreen(word.x, word.y);
+
+    drawVector(
+        screen.x,
+        screen.y,
+        word.debug.mouseForceX,
+        word.debug.mouseForceY,
+        30,
+        "rgba(255, 100, 180, 0.9)"
+    );
+}
+
+function drawMouseRadius() {
+    if (mouse.x <= -1000) {
+        return;
+    }
+
+    const mouseWorld = screenToWorld(mouse.x, mouse.y);
+    const screen = worldToScreen(mouseWorld.x, mouseWorld.y);
+
+    ctx.beginPath();
+    ctx.arc(
+        screen.x,
+        screen.y,
+        config.mouseRadius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.strokeStyle = "rgba(255, 100, 180, 0.3)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+}
+
+function drawCollisions() {
+    for (const collision of debugCollisions) {
+        const point = worldToScreen(
+            collision.contactX,
+            collision.contactY
+        );
+
+        // Contact point.
+        ctx.beginPath();
+        ctx.arc(
+            point.x,
+            point.y,
+            4,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle = "red";
+        ctx.fill();
+
+        // Collision normal.
+        drawVector(
+            point.x,
+            point.y,
+            collision.nx,
+            collision.ny,
+            30,
+            "red"
+        );
+
+        // Collision impulse.
+        if (collision.impulse !== 0) {
+            drawVector(
+                point.x,
+                point.y,
+                collision.impulseX,
+                collision.impulseY,
+                10,
+                "orange"
+            );
+        }
+    }
+}
+
+function drawSpatialHash() {
+    const halfWidth = window.innerWidth / 2;
+    const halfHeight = window.innerHeight / 2;
+
+    const minWorldX = camera.x - halfWidth;
+    const maxWorldX = camera.x + halfWidth;
+    const minWorldY = camera.y - halfHeight;
+    const maxWorldY = camera.y + halfHeight;
+
+    const startX =
+        Math.floor(minWorldX / spatialHash.cellSize);
+
+    const endX =
+        Math.floor(maxWorldX / spatialHash.cellSize);
+
+    const startY =
+        Math.floor(minWorldY / spatialHash.cellSize);
+
+    const endY =
+        Math.floor(maxWorldY / spatialHash.cellSize);
+
+    const cellSize = spatialHash.cellSize;
+    const markerSize = cellSize * 0.05;
+    const markerOffset = (cellSize - markerSize) / 2;
+
+    for (let x = startX; x <= endX; x++) {
+        for (let y = startY; y <= endY; y++) {
+            const minCellX = x * cellSize;
+            const minCellY = y * cellSize;
+
+            const screen = worldToScreen(
+                minCellX,
+                minCellY
+            );
+
+            // Draw the actual cell walls.
+            ctx.strokeStyle = "rgba(0, 200, 255, 0.12)";
+            ctx.lineWidth = 1;
+
+            ctx.strokeRect(
+                screen.x,
+                screen.y,
+                cellSize,
+                cellSize
+            );
+
+            // Mark occupied cells.
+            const key = spatialHash.key(x, y);
+
+            if (!spatialHash.cells.has(key)) {
+                continue;
+            }
+
+            // Draw a small marker in the center of the cell.
+            ctx.fillStyle = "rgba(0, 200, 255, 0.12)";
+            ctx.fillRect(
+                screen.x + markerOffset,
+                screen.y + markerOffset,
+                markerSize,
+                markerSize
+            );
+
+            ctx.strokeStyle = "rgba(0, 200, 255, 0.35)";
+            ctx.strokeRect(
+                screen.x + markerOffset,
+                screen.y + markerOffset,
+                markerSize,
+                markerSize
+            );
+        }
+    }
+}
+
 export function initDebug() {
-    if (!debugEnabled) {
+    if (!debugStats) {
         return;
     }
 
@@ -41,8 +301,33 @@ export function initDebug() {
     document.body.appendChild(debugElement);
 }
 
+export function drawDebug(visibleObjects) {
+    if (!debugEnabled) {
+        return;
+    }
+
+    if (debugHash) {
+        drawSpatialHash();
+    }
+
+    if (debugPhysics) {
+        drawMouseRadius();
+
+        for (const word of visibleObjects) {
+            drawBoundingRadius(word);
+            drawHitbox(word);
+            drawCenter(word);
+            drawVelocity(word);
+            drawCurrentForce(word);
+            drawMouseForce(word);
+        }
+
+        drawCollisions();
+    }
+}
+
 export function updateDebug(deltaTime, visibleObjects) {
-    if (!debugEnabled || !debugElement) {
+    if (!debugStats || !debugElement) {
         return;
     }
 

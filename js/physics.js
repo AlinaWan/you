@@ -131,10 +131,14 @@ function getSupportPoint(object, direction) {
 
 const activeCollisions = new Set();
 
+export const debugCollisions = [];
+
 export function handleCollisions() {
     const objects = getVisibleObjects(config.simulationPadding);
     const processed = new Set();
     const currentCollisions = new Set();
+
+    debugCollisions.length = 0;
 
     for (const a of objects) {
         const nearby = spatialHash.getNearby(a.x, a.y, 1);
@@ -156,6 +160,21 @@ export function handleCollisions() {
             }
 
             currentCollisions.add(pairKey);
+
+            const debugCollision = {
+                a,
+                b,
+                depth: collision.depth,
+                nx: collision.nx,
+                ny: collision.ny,
+                contactX: collision.contactX,
+                contactY: collision.contactY,
+                impulseX: 0,
+                impulseY: 0,
+                impulse: 0
+            };
+
+            debugCollisions.push(debugCollision);
 
             if (!activeCollisions.has(pairKey)) {
                 playCollision();
@@ -213,6 +232,10 @@ export function handleCollisions() {
 
                 const impulseX = impulse * nx;
                 const impulseY = impulse * ny;
+
+                debugCollision.impulse = impulse;
+                debugCollision.impulseX = impulseX;
+                debugCollision.impulseY = impulseY;
 
                 // Linear response.
                 a.vx -= impulseX / a.mass;
