@@ -1,0 +1,142 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+}
+
+body {
+    color: var(--text);
+    font-family: "DM Sans", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+body[data-theme="light"] {
+    --text: #292629;
+    --muted: #898388;
+    --line: #d8d3d6;
+    --accent: #e85d89;
+}
+
+body[data-theme="dark"] {
+    --text: #eee9ed;
+    --muted: #979197;
+    --line: #3a3539;
+    --accent: #ff709d;
+}
+
+.page {
+    width: 100%;
+    min-height: 500px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 50px 24px;
+}
+
+.content {
+    width: min(100%, 680px);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+}
+
+.eyebrow {
+    margin: 0 0 22px;
+
+    color: var(--muted);
+
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+h1 {
+    margin: 0;
+
+    color: var(--text);
+
+    font-family: "Libre Baskerville", Georgia, serif;
+    font-size: clamp(90px, 14vw, 150px);
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: -0.08em;
+    line-height: 0.82;
+}
+
+.line {
+    width: min(100%, 560px);
+    height: 1px;
+    margin: 34px 0 27px;
+
+    background: var(--line);
+}
+
+.description {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-family: "Libre Baskerville", Georgia, serif;
+    font-size: clamp(18px, 2.3vw, 24px);
+    font-style: italic;
+    line-height: 1.65;
+}
+
+.description em {
+    color: var(--text);
+}
+
+.link {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    margin-top: 36px;
+    padding-bottom: 5px;
+
+    color: var(--text);
+    border-bottom: 1px solid var(--text);
+
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+
+    transition:
+        color 180ms ease,
+        border-color 180ms ease,
+        gap 180ms ease;
+}
+
+.link:hover {
+    gap: 14px;
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.arrow {
+    font-size: 16px;
+    line-height: 1;
+}
+
+footer {
+    margin-top: auto;
+
+    color: var(--accent);
+    font-size: 14px;
+}

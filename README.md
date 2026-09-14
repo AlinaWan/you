@@ -1,19 +1,16 @@
-<br><br>
-
-<div align="center">
-  <p>a little personal project</p>
-</div>
-
-<br><br>
-
-<div align="center">
-  <p><i><a href="https://alinawan.github.io/you/">for you</a></i></p>
-</div>
-
-<br><br>
-
-<div align="center">
-  <p>🩷</p>
-</div>
-
-<br><br>
+<a href="https://alinawan.github.io/you/">
+  <picture>
+    <source
+      media="(prefers-color-scheme: dark)"
+      srcset="images/readme-dark.webp"
+    >
+    <source
+      media="(prefers-color-scheme: light)"
+      srcset="images/readme-light.webp"
+    >
+    <img
+      src="images/readme-light.webp"
+      width="100%"
+    >
+  </picture>
+</a>

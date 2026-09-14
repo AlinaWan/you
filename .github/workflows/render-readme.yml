@@ -1,0 +1,41 @@
+name: Render README
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "readme/**"
+      - ".github/workflows/build-readme.yml"
+      - ".github/scripts/renderReadme.js"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Capture README
+        run: node .github/scripts/renderReadme.js
+
+      - name: Commit README images
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "Update readme images"
+          file_pattern: "images/readme-light.webp images/readme-dark.webp"
