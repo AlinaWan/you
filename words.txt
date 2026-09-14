@@ -48,3 +48,4 @@ b19e68d8b361	ignorance	2026-09-13	regret	Turn a blind eye if it makes it hurt le
 f20be237074c	stupid	2026-09-13	me	
 eb9860eff614	hope	2026-09-13	longing	I already lost all of it.
 f43c4d64810a	normal	2026-09-13	longing,dream	Maybe my next life will be.
+af5ca47b7c58	nightmare	2026-09-13	regret	Synonym: My life.
