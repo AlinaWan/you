@@ -38,3 +38,4 @@ bda247930672	reason	2026-09-13	us,regret	We left each other without one.
 d5a4602fc255	hold on	2026-09-13		Let go.
 92632f4ff961	let go	2026-09-13		Hold on.
 b19e68d8b361	ignorance	2026-09-13	regret	Turn a blind eye if it makes it hurt less.
+87a07dd2fdbf	emptiness	2026-09-13	me,longing	
