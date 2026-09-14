@@ -43,3 +43,4 @@ b19e68d8b361	ignorance	2026-09-13	regret	Turn a blind eye if it makes it hurt le
 3bc87e9d61d1	overwhelmed	2026-09-13	me	
 6775e1b879f9	je sais pas	2026-09-13	phrase	
 91b63f620aa1	replaced	2026-09-13	me,you,bitter	What you did to me.
+18a059823135	ghosted	2026-09-13	bitter	I prefer the certainty of getting blocked.
