@@ -57,3 +57,4 @@ dda04fc7ce07	world	2026-09-14	you,love	It doesn't revolve around you, but mine d
 3d99b56f6ac2	complacency	2026-09-14		
 447d492de94e	apathy	2026-09-14		
 ff827d7975b0	lassitude	2026-09-14		
+f75b082e3376	bitterness	2026-09-14	taste,bitter	What everything tastes like.
