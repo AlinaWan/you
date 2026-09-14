@@ -45,3 +45,4 @@ b19e68d8b361	ignorance	2026-09-13	regret	Turn a blind eye if it makes it hurt le
 91b63f620aa1	replaced	2026-09-13	me,you,bitter	What you did to me.
 18a059823135	ghosted	2026-09-13	bitter	I prefer the certainty of getting blocked.
 505a97540261	him	2026-09-13	you,love,longing,regret	What happened to my sweet boy?
+f20be237074c	stupid	2026-09-13	me	
