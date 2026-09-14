@@ -51,3 +51,4 @@ f43c4d64810a	normal	2026-09-13	longing,dream	Maybe my next life will be.
 af5ca47b7c58	nightmare	2026-09-13	regret	Synonym: My life.
 b54fb701bdac	sigh	2026-09-13	regret,still	Something I do too much.
 5fde5ba1adf5	crying	2026-09-14	me,still	What I feel like doing all the time, but my eyes just won't let me.
+fe039eb5d0e6	special	2026-09-14	you,love,unrequited	You were to me; I wasn't to you.
