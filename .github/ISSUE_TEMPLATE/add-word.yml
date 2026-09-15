@@ -14,6 +14,21 @@ body:
         > 3. Use common tags if possible. New tags will be considered on a case-by-case basis.
         > 4. Ensure your note forms a grammatically valid sentence when structured as: "`<Word>`: `<Note>`"
         > 5. Try not to use your word in the note. This is not a hard rule.
+        > 6. Maintainers may edit submissions prior to approval to maintain consistency with the project's vision.
+
+        ✅ Example of a good submission:
+        ```yml
+        Word: eyes
+        Tags: you,memory,love
+        Note: Yours were so beautiful, I could see them in my dreams.
+        ```
+
+        ❌ Example of a bad submission:
+        ```yml
+        Word: Eyes
+        Tags: a memory,eyes,Love
+        Note: Your eyes were so beautiful, I could see them in my dreams
+        ```
 
   - type: input
     id: word
