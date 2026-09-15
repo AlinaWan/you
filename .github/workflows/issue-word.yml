@@ -70,7 +70,7 @@ jobs:
 
           gh issue comment "$ISSUE_NUMBER" \
             --body "$(cat <<EOF
-          Submission received and pending moderation.
+          Thanks for your submission! We've received it and a maintainer will review it soon.
 
           ### Moderation commands
 
@@ -497,7 +497,9 @@ jobs:
           git push
 
           gh issue comment "$ISSUE_NUMBER" \
-            --body "Approved and added to \`words.txt\`.
+            --body "You're all set! Your submission was approved and added to \`words.txt\`.
+
+          You can view your word [here](https://alinawan.github.io/you/?track=$ID) in a couple of minutes.
 
           **Word:** $WORD
           **ID:** \`$ID\`
@@ -521,7 +523,9 @@ jobs:
           set -euo pipefail
 
           gh issue comment "$ISSUE_NUMBER" \
-            --body "Submission rejected."
+            --body "Thanks for your submission! Unfortunately, we think this submission is unrelated to or outside the vision of the **you** project.
+
+            Feel free to review the instructions in the issue template and submit another word."
 
           gh issue edit "$ISSUE_NUMBER" \
             --remove-label pending \
