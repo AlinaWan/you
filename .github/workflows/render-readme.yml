@@ -37,5 +37,5 @@ jobs:
       - name: Commit README images
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: "Update readme images"
-          file_pattern: "images/readme-light.webp images/readme-dark.webp"
+          commit_message: "Render and update readme"
+          file_pattern: "images/readme/part-*"
