@@ -1,7 +1,7 @@
 import { camera, isTracking, getTrackedWord, screenToWorld, worldToScreen } from "./camera.js";
 import { config } from "./config.js";
 import { ctx } from "./canvas.js";
-import { keys, mouse, getPointerCount } from "./controls.js";
+import { keys, mouse, getPointerCount, applyDeadzone } from "./controls.js";
 import { wordObjects, getVisibleObjects } from "./word.js";
 import { spatialHash } from "./spatialHash.js";
 import { debugCollisions } from "./physics.js";
@@ -343,6 +343,10 @@ export function updateDebug(deltaTime, visibleObjects) {
         fps = 1000 / frameTime;
     }
 
+    // Displays raw, unadjusted input values (before deadzone or clamping).
+    // Note: Values may exceed 1.0 if multiple input sources (e.g., keyboard + controller)
+    // are active simultaneously. controls.js will clamp and process these
+    // values before applying them to panning logic.
     let inputX = 0;
     let inputY = 0;
 
@@ -360,6 +364,14 @@ export function updateDebug(deltaTime, visibleObjects) {
 
     if (keys.has("s") || keys.has("arrowdown")) {
         inputY += 1;
+    }
+
+    const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+    const gamepad = Array.from(gamepads).find(gp => gp !== null);
+
+    if (gamepad) {
+        inputX += (gamepad.axes[0] ?? 0);
+        inputY += (gamepad.axes[1] ?? 0);
     }
 
     const pointerCount = getPointerCount();

@@ -25,6 +25,27 @@ let touchVelocityY = 0;
 const TOUCH_CURSOR_DELAY = 120;
 let cursorActivationTimer = null;
 
+const GAMEPAD_INNER_DEADZONE = 0.15;
+const GAMEPAD_OUTER_DEADZONE = 0.90;
+
+export function applyDeadzone(value) {
+    const magnitude = Math.abs(value);
+
+    if (magnitude <= GAMEPAD_INNER_DEADZONE) {
+        return 0;
+    }
+
+    if (magnitude >= GAMEPAD_OUTER_DEADZONE) {
+        return Math.sign(value);
+    }
+
+    const normalized =
+        (magnitude - GAMEPAD_INNER_DEADZONE) /
+        (GAMEPAD_OUTER_DEADZONE - GAMEPAD_INNER_DEADZONE);
+
+    return Math.sign(value) * normalized;
+}
+
 export function isTyping() {
     const active = document.activeElement;
 
@@ -165,6 +186,43 @@ export function updateCamera(deltaTime) {
     if (keys.has("a") || keys.has("arrowleft")) dx -= 1;
     if (keys.has("d") || keys.has("arrowright")) dx += 1;
 
+    // Gamepad input handling
+    const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+    const gamepad = Array.from(gamepads).find(gp => gp !== null);
+
+    if (gamepad) {
+        // Left joystick: camera pan (Axes 0 & 1)
+        const gpPanX = applyDeadzone(gamepad.axes[0] || 0);
+        const gpPanY = applyDeadzone(gamepad.axes[1] || 0);
+
+        if (gpPanX !== 0 || gpPanY !== 0) {
+            dx += gpPanX;
+            dy += gpPanY;
+        }
+
+        // Right joystick: cursor move (Axes 2 & 3)
+        const gpCursorX = applyDeadzone(gamepad.axes[2] || 0);
+        const gpCursorY = applyDeadzone(gamepad.axes[3] || 0);
+
+        if (gpCursorX !== 0 || gpCursorY !== 0) {
+            const rect = canvas.getBoundingClientRect();
+
+            // Initialize cursor at center if active mouse is off-screen/inactive
+            if (!mouse.active || mouse.x < 0 || mouse.y < 0) {
+                mouse.x = rect.width / 2;
+                mouse.y = rect.height / 2;
+            }
+
+            mouse.x += gpCursorX * config.gamepadCursorSpeed * deltaTime;
+            mouse.y += gpCursorY * config.gamepadCursorSpeed * deltaTime;
+
+            // Clamp cursor to canvas boundaries
+            mouse.x = Math.max(0, Math.min(rect.width, mouse.x));
+            mouse.y = Math.max(0, Math.min(rect.height, mouse.y));
+            mouse.active = true;
+        }
+    }
+
     if (dx !== 0 || dy !== 0) {
         if (isTracking()) {
             stopTracking();
@@ -175,8 +233,11 @@ export function updateCamera(deltaTime) {
 
         const length = Math.hypot(dx, dy);
 
-        dx /= length;
-        dy /= length;
+        // Normalize if combined magnitude exceeds 1 (e.g. diagonal keyboard or extreme analog tilt)
+        if (length > 1) {
+            dx /= length;
+            dy /= length;
+        }
 
         const acceleration = 1800;
 
