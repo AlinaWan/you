@@ -71,3 +71,4 @@ bd187e263214	hurt	2026-09-14	me,you,regret	What you did to me.
 847d712e13de	bored	2026-09-14	me	No one to talk to, and I don't even want to play anything.
 e8f8d2e12fce	strangers	2026-09-14	us,you	We weren't before, were we?
 9e1f5408ec60	late	2026-09-14	regret	What I always seem to be.
+7d6731fc6e29	traitor	2026-09-14	song,bitter	By Olivia Rodrigo.
