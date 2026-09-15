@@ -381,6 +381,54 @@ canvas {
 
 
 /* =========================================================
+           SUBMIT BUTTON
+========================================================= */
+#submitButton {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: rgba(20, 20, 20, 0.85);
+    color: #777;
+    cursor: pointer;
+    text-decoration: none;
+    backdrop-filter: blur(4px);
+    transition: background 0.15s ease, border-color 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+    #submitButton:hover {
+        background: rgba(35, 35, 35, 0.95);
+        border-color: #555;
+    }
+
+    #submitButton:active {
+        background: rgba(50, 50, 50, 0.95);
+    }
+
+    #submitButton svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    #submitButton:focus {
+        outline: none;
+    }
+
+    #submitButton:focus-visible {
+        outline: 2px solid #666;
+        outline-offset: 2px;
+    }
+
+
+/* =========================================================
            HELP
 ========================================================= */
 
@@ -412,6 +460,16 @@ canvas {
     }
 
     #hint {
+        bottom: 10px;
+    }
+
+    #submitButton {
+        left: 10px;
+        bottom: 10px;
+    }
+
+    #muteButton {
+        right: 10px;
         bottom: 10px;
     }
 }
