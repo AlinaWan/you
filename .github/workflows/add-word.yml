@@ -35,22 +35,19 @@ jobs:
           TAGS: ${{ inputs.tags }}
           NOTE: ${{ inputs.note }}
         run: |
+          set -euo pipefail
+
           DATE=$(TZ='Etc/GMT+7' date '+%Y-%m-%d')
           ID=$(openssl rand -hex 6)
+          TAGS=$(printf '%s' "$TAGS" |
+            sed 's/[[:space:]]*,[[:space:]]*/,/g; s/^[[:space:]]*//; s/[[:space:]]*$//')
 
-          TAGS=$(printf '%s' "$TAGS" | sed 's/[[:space:]]*,[[:space:]]*/,/g; s/^[[:space:]]*//; s/[[:space:]]*$//')
-
-          if [ -s words.txt ] && [ -n "$(tail -c 1 words.txt)" ]; then
-            printf '\n' >> words.txt
-          fi
-
-          printf '%s\t%s\t%s\t%s\t%s\n' \
+          ./.github/scripts/add_word.sh \
             "$ID" \
             "$WORD" \
             "$DATE" \
             "$TAGS" \
-            "$NOTE" \
-            >> words.txt
+            "$NOTE"
 
           echo "ID=$ID" >> "$GITHUB_ENV"
           echo "WORD=$WORD" >> "$GITHUB_ENV"

@@ -1,0 +1,67 @@
+name: Add Word
+description: Submit a word to the word plane.
+title: "Add word"
+labels:
+  - word
+  - pending
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!IMPORTANT]
+        > 1. Please check `words.txt` for style, conventions, and common tags before submitting. 
+        > 2. Ensure your submitted word is written in **all lowercase**.
+        > 3. Use common tags if possible. New tags will be considered on a case-by-case basis.
+        > 4. Ensure your note forms a grammatically valid sentence when structured as: "`<Word>`: `<Note>`"
+        > 5. Try not to use your word in the note. This is not a hard rule.
+
+  - type: input
+    id: word
+    attributes:
+      label: Word
+      description: The word to submit.
+      placeholder: eyes
+    validations:
+      required: true
+
+  - type: input
+    id: tags
+    attributes:
+      label: Tags
+      description: Comma-delimited tags. Optional.
+      placeholder: you,memory,love
+    validations:
+      required: false
+
+  - type: textarea
+    id: note
+    attributes:
+      label: Note
+      description: A note about the word. Optional.
+      placeholder: Yours were so beautiful, I could see them in my dreams.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: license
+    attributes:
+      label: Submission Licence
+      description: Please read the following agreement before submitting.
+      options:
+        - label: >-
+            I agree to the following Submission Licence: I represent and warrant
+            that I have the necessary rights to grant this licence. By submitting
+            this content, I grant Angelina and the **you** project a **non-exclusive,
+            worldwide, perpetual, irrevocable, royalty-free, transferable and
+            sublicensable licence** to use, reproduce, modify, adapt, transform,
+            create derivative works from, publish, distribute, display, perform,
+            transmit, store, archive, and otherwise use my submission, in whole
+            or in part, **in any medium and for any purpose, without limitation
+            or further permission from me and without payment or attribution**.
+            I retain ownership of my submission and may continue to use it
+            myself or license it to others. **To the extent permitted by
+            applicable law, I waive any moral rights I may have in the
+            submission in favour of Angelina and the you project, including
+            rights relating to attribution and the integrity of the
+            submission.**
+          required: true

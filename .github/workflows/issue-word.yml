@@ -1,0 +1,531 @@
+name: Issue Word
+
+on:
+  issues:
+    types:
+      - opened
+
+  issue_comment:
+    types:
+      - created
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  initialize:
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Initialize submission
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+
+          WORD=$(
+            printf '%s\n' "$ISSUE_BODY" |
+              awk '
+                /^### Word[[:space:]]*$/ {
+                  section = "word"
+                  next
+                }
+
+                /^### Tags[[:space:]]*$/ {
+                  section = ""
+                  next
+                }
+
+                /^### Note[[:space:]]*$/ {
+                  section = ""
+                  next
+                }
+
+                /^### / {
+                  section = ""
+                  next
+                }
+
+                section == "word" && $0 != "" {
+                  print
+                  exit
+                }
+              '
+          )
+
+          if [ -z "$WORD" ]; then
+            echo "ERROR: Word could not be extracted from the Issue Form."
+            exit 1
+          fi
+
+          gh issue edit "$ISSUE_NUMBER" \
+            --title "[SUBMISSION] Add word: $WORD"
+
+          gh issue comment "$ISSUE_NUMBER" \
+            --body "$(cat <<EOF
+          Submission received and pending moderation.
+
+          ### Moderation commands
+
+          - \`/validate\` — validate the current submission and save it as the version eligible for approval.
+          - \`/approve\` — approve the most recently validated version and add it to \`words.txt\`.
+          - \`/reject\` — reject the submission and close this Issue.
+
+          You can edit the submission above before validating it.
+
+          **Important:** \`/approve\` always uses the **last successfully validated version**, not the current Issue contents. Run \`/validate\` again after making changes you want approved.
+          EOF
+          )"
+
+  command:
+    if: github.event_name == 'issue_comment'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Detect command
+        id: command
+        env:
+          COMMENT: ${{ github.event.comment.body }}
+        run: |
+          set -euo pipefail
+
+          COMMAND=$(
+            printf '%s\n' "$COMMENT" |
+              sed -nE 's/^[[:space:]]*\/(approve|reject|validate)[[:space:]]*$/\1/p' |
+              head -n 1
+          )
+
+          echo "command=$COMMAND" >> "$GITHUB_OUTPUT"
+
+      - name: Stop if not a command
+        if: steps.command.outputs.command == ''
+        run: |
+          echo "INFO: Comment does not contain a recognized command."
+
+      - name: Check authorization
+        id: authorization
+        if: steps.command.outputs.command != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ACTOR: ${{ github.event.comment.user.login }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          PERMISSION=$(
+            gh api \
+              "/repos/$REPOSITORY/collaborators/$ACTOR/permission" \
+              --jq '.permission' \
+              2>/dev/null ||
+            echo "none"
+          )
+
+          case "$PERMISSION" in
+            admin|maintain|push)
+              echo "authorized=true" >> "$GITHUB_OUTPUT"
+              echo "OK: $ACTOR is authorized."
+              ;;
+
+            *)
+              echo "authorized=false" >> "$GITHUB_OUTPUT"
+              echo "WARN: $ACTOR is not authorized."
+              ;;
+          esac
+
+      - name: Reject unauthorized command
+        if: >
+          steps.command.outputs.command != '' &&
+          steps.authorization.outputs.authorized != 'true'
+        run: |
+          echo "WARN: Ignoring unauthorized command."
+
+      - name: Checkout
+        if: >
+          steps.authorization.outputs.authorized == 'true' &&
+          (
+            steps.command.outputs.command == 'approve' ||
+            steps.command.outputs.command == 'validate'
+          )
+        uses: actions/checkout@v7
+
+      - name: Read issue
+        if: >
+          steps.authorization.outputs.authorized == 'true' &&
+          (
+            steps.command.outputs.command == 'approve' ||
+            steps.command.outputs.command == 'validate'
+          )
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+
+          gh issue view "$ISSUE_NUMBER" \
+            --json body > issue.json
+
+          jq -r '.body' issue.json > issue-body.md
+
+      - name: Parse issue
+        id: parse
+        if: >
+          steps.authorization.outputs.authorized == 'true' &&
+          (
+            steps.command.outputs.command == 'approve' ||
+            steps.command.outputs.command == 'validate'
+          )
+        run: |
+          set -euo pipefail
+
+          awk '
+            function trim(value) {
+              sub(/^[[:space:]]+/, "", value)
+              sub(/[[:space:]]+$/, "", value)
+              return value
+            }
+
+            /^### Word[[:space:]]*$/ {
+              section = "word"
+              next
+            }
+
+            /^### Tags[[:space:]]*$/ {
+              section = "tags"
+              next
+            }
+
+            /^### Note[[:space:]]*$/ {
+              section = "note"
+              next
+            }
+
+            /^### / {
+              section = ""
+              next
+            }
+
+            {
+              if (section == "word" && word == "" && $0 != "")
+                word = trim($0)
+
+              if (section == "tags" && tags == "" && $0 != "")
+                tags = trim($0)
+
+              if (section == "note" && note == "" && $0 != "")
+                note = trim($0)
+            }
+
+            END {
+              print "WORD=" word
+              print "TAGS=" tags
+              print "NOTE=" note
+            }
+          ' issue-body.md > parsed.txt
+
+          WORD=$(sed -n 's/^WORD=//p' parsed.txt)
+          TAGS=$(sed -n 's/^TAGS=//p' parsed.txt)
+          NOTE=$(sed -n 's/^NOTE=//p' parsed.txt)
+
+          [ "$TAGS" = "_No response_" ] && TAGS=""
+          [ "$NOTE" = "_No response_" ] && NOTE=""
+
+          {
+            echo "WORD<<EOF"
+            printf '%s\n' "$WORD"
+            echo "EOF"
+
+            echo "TAGS<<EOF"
+            printf '%s\n' "$TAGS"
+            echo "EOF"
+
+            echo "NOTE<<EOF"
+            printf '%s\n' "$NOTE"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Validate
+        id: validate
+        if: >
+          steps.authorization.outputs.authorized == 'true' &&
+          (
+            steps.command.outputs.command == 'approve' ||
+            steps.command.outputs.command == 'validate'
+          )
+        env:
+          WORD: ${{ steps.parse.outputs.WORD }}
+          TAGS: ${{ steps.parse.outputs.TAGS }}
+          NOTE: ${{ steps.parse.outputs.NOTE }}
+        run: |
+          set -euo pipefail
+
+          ERRORS=0
+
+          if [ -z "$WORD" ]; then
+            echo "ERROR: Word is empty."
+            ERRORS=$((ERRORS + 1))
+          fi
+
+          if [[ "$WORD" == *$'\t'* ]]; then
+            echo "ERROR: Word cannot contain a tab."
+            ERRORS=$((ERRORS + 1))
+          fi
+
+          if [[ "$WORD" == *$'\n'* ]]; then
+            echo "ERROR: Word cannot contain a newline."
+            ERRORS=$((ERRORS + 1))
+          fi
+
+          if [[ "$TAGS" == *$'\t'* ]]; then
+            echo "ERROR: Tags cannot contain tabs."
+            ERRORS=$((ERRORS + 1))
+          fi
+
+          if [[ "$TAGS" == *$'\n'* ]]; then
+            echo "ERROR: Tags cannot contain newlines."
+            ERRORS=$((ERRORS + 1))
+          fi
+
+          if [[ "$NOTE" == *$'\t'* ]]; then
+            echo "ERROR: Note cannot contain tabs."
+            ERRORS=$((ERRORS + 1))
+          fi
+
+          if [[ "$NOTE" == *$'\n'* ]]; then
+            echo "ERROR: Note cannot contain newlines."
+            ERRORS=$((ERRORS + 1))
+          fi
+
+          if [ "$ERRORS" -ne 0 ]; then
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          VALIDATION_JSON=$(
+            jq -cn \
+              --arg word "$WORD" \
+              --arg tags "$TAGS" \
+              --arg note "$NOTE" \
+              '{
+                word: $word,
+                tags: $tags,
+                note: $note
+              }'
+          )
+
+          VALIDATION_DATA=$(
+            printf '%s' "$VALIDATION_JSON" |
+              base64 -w 0
+          )
+
+          echo "valid=true" >> "$GITHUB_OUTPUT"
+          echo "validation_data=$VALIDATION_DATA" >> "$GITHUB_OUTPUT"
+
+          echo "OK: Submission is valid."
+          echo
+          echo "Word: $WORD"
+          echo "Tags: $TAGS"
+          echo "Note: $NOTE"
+
+      - name: Save successful validation
+        if: >
+          steps.authorization.outputs.authorized == 'true' &&
+          steps.command.outputs.command == 'validate' &&
+          steps.validate.outputs.valid == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          WORD: ${{ steps.parse.outputs.WORD }}
+          TAGS: ${{ steps.parse.outputs.TAGS }}
+          NOTE: ${{ steps.parse.outputs.NOTE }}
+          VALIDATION_DATA: ${{ steps.validate.outputs.validation_data }}
+        run: |
+          set -euo pipefail
+
+          gh issue comment "$ISSUE_NUMBER" \
+            --body "$(cat <<EOF
+          Validation successful.
+
+          **Word:** $WORD
+          **Tags:** $TAGS
+          **Note:** $NOTE
+
+          These fields are now validated for approval.
+
+          <!-- YOU_VALIDATION
+          DATA=$VALIDATION_DATA
+          -->
+          EOF
+          )"
+
+      - name: Report validation failure
+        if: >
+          steps.authorization.outputs.authorized == 'true' &&
+          steps.command.outputs.command == 'validate' &&
+          steps.validate.outputs.valid != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+
+          gh issue comment "$ISSUE_NUMBER" \
+            --body "Validation failed. Please fix the submission and run \`/validate\` again."
+
+      - name: Find last successful validation
+        id: last_validation
+        if: >
+          steps.authorization.outputs.authorized == 'true' &&
+          steps.command.outputs.command == 'approve'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+
+          COMMENTS=$(
+            gh api \
+              --paginate \
+              "/repos/${{ github.repository }}/issues/$ISSUE_NUMBER/comments?per_page=100" |
+              jq -s 'add'
+          )
+
+          VALIDATION=$(
+            printf '%s' "$COMMENTS" |
+              jq -r '
+                [
+                  .[] |
+                  select(
+                    .user.login == "github-actions[bot]" and
+                    (.body | contains("<!-- YOU_VALIDATION"))
+                  )
+                ]
+                | sort_by(.created_at)
+                | last
+                | .body // empty
+              '
+          )
+
+          if [ -z "$VALIDATION" ]; then
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            echo "WARN: No successful validation exists."
+            exit 0
+          fi
+
+          DATA=$(
+            printf '%s\n' "$VALIDATION" |
+              sed -n 's/^DATA=\(.*\)$/\1/p' |
+              head -n 1
+          )
+
+          if [ -z "$DATA" ]; then
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            echo "WARN: Last validation snapshot is malformed."
+            exit 0
+          fi
+
+          echo "found=true" >> "$GITHUB_OUTPUT"
+          echo "data=$DATA" >> "$GITHUB_OUTPUT"
+
+          echo "OK: Found last successful validation."
+
+      - name: Refuse approval without validation
+        if: >
+          steps.authorization.outputs.authorized == 'true' &&
+          steps.command.outputs.command == 'approve' &&
+          steps.last_validation.outputs.found != 'true'
+        run: |
+          echo "ERROR: No successful validation exists."
+          echo "Run /validate before /approve."
+
+      - name: Approve
+        if: >
+          steps.authorization.outputs.authorized == 'true' &&
+          steps.command.outputs.command == 'approve' &&
+          steps.last_validation.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          VALIDATION_DATA: ${{ steps.last_validation.outputs.data }}
+        run: |
+          set -euo pipefail
+
+          JSON=$(
+            printf '%s' "$VALIDATION_DATA" |
+              base64 -d
+          )
+
+          WORD=$(printf '%s' "$JSON" | jq -r '.word')
+          TAGS=$(printf '%s' "$JSON" | jq -r '.tags')
+          NOTE=$(printf '%s' "$JSON" | jq -r '.note')
+
+          DATE=$(TZ='Etc/GMT+7' date '+%Y-%m-%d')
+
+          HEX=$(openssl rand -hex 3)
+          ID="u${ISSUE_NUMBER}-${HEX}"
+          TAGS=$(printf '%s' "$TAGS" |
+            sed 's/[[:space:]]*,[[:space:]]*/,/g; s/^[[:space:]]*//; s/[[:space:]]*$//')
+
+          ./.github/scripts/add_word.sh \
+            "$ID" \
+            "$WORD" \
+            "$DATE" \
+            "$TAGS" \
+            "$NOTE"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add words.txt
+
+          git commit \
+            -m "$(cat <<EOF
+          Add word: $WORD (#$ISSUE_NUMBER)
+
+          Date: $DATE
+          Tags: $TAGS
+          Note: $NOTE
+          EOF
+          )"
+
+          git push
+
+          gh issue comment "$ISSUE_NUMBER" \
+            --body "Approved and added to \`words.txt\`.
+
+          **Word:** $WORD
+          **ID:** \`$ID\`
+          **Date:** $DATE"
+
+          gh issue edit "$ISSUE_NUMBER" \
+            --remove-label pending \
+            --add-label approved
+
+          gh issue close "$ISSUE_NUMBER"
+          gh issue lock "$ISSUE_NUMBER"
+
+      - name: Reject
+        if: >
+          steps.authorization.outputs.authorized == 'true' &&
+          steps.command.outputs.command == 'reject'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+
+          gh issue comment "$ISSUE_NUMBER" \
+            --body "Submission rejected."
+
+          gh issue edit "$ISSUE_NUMBER" \
+            --remove-label pending \
+            --add-label rejected
+
+          gh issue close "$ISSUE_NUMBER"
+          gh issue lock "$ISSUE_NUMBER"
