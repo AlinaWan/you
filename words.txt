@@ -74,3 +74,4 @@ e8f8d2e12fce	strangers	2026-09-14	us,you	We weren't before, were we?
 7d6731fc6e29	traitor	2026-09-14	song,bitter	By Olivia Rodrigo.
 4411a5b3538e	betray	2026-09-14	bitter	Isn't it funny how you did that to me?
 515e07595de9	try	2026-09-15	bitter	I don't know why I still do it anymore.
+61c249c07e53	headache	2026-09-15		The kind that codeine won't fix.
