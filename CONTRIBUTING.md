@@ -22,6 +22,35 @@ npx playwright install --with-deps chromium
 node .github/scripts/renderReadme.js
 ```
 
+The rendered README is composed of files in [`readme/`](./readme/). Each part is defined by a `part-N.html` file, where `N` is a zero-based index. Parts are rendered in ascending numerical order and must be contiguous:
+
+```text
+readme\
+├── part-0.html
+├── part-1.html
+├── part-2.html
+└── style.css
+```
+
+Each part must include a `readme-href=` comment immediately after the `<!DOCTYPE html>` declaration:
+```html
+<!DOCTYPE html>
+<!-- readme-href=https://alinawan.github.io/you/ -->
+```
+
+Each part has a corresponding dark and light image, which are generated in the [`images/readme/`](./images/readme/) directory and referenced in the generated README.
+
+```text
+images\
+└── readme\
+    ├── part-0-dark.webp
+    ├── part-0-light.webp
+    ├── part-1-dark.webp
+    ├── part-1-light.webp
+    ├── part-2-dark.webp
+    └── part-2-light.webp
+```
+
 ## Schemas
 The schemas documented here reflect the current implementation and are subject to change.
 
