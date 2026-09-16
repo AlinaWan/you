@@ -2,9 +2,19 @@
 
 ## User Submissions
 
-You can submit a new word to the plane by creating an [issue](https://github.com/AlinaWan/you/issues/new?template=add-word.yml) and following the instructions provided.
+You can submit a new word to the plane by creating an [Issue](https://github.com/AlinaWan/you/issues/new?template=add-word.yml) and following the instructions provided.
 
 By submitting content, you must agree to the Submission Licence included in the submission form. Submissions remain the property of their respective authors, but are licensed to the you project under the terms of that agreement.
+
+## Code Contributions
+
+Code contributions are accepted through [Pull Requests](https://github.com/AlinaWan/you/compare).
+
+By submitting a code contribution, you agree to the [Contributor License Agreement](CLA.md). **Every commit in a Pull Request must contain a `Signed-off-by:` trailer accepting the agreement for that contribution.** You can add it automatically when creating a commit with:
+
+```powershell
+git commit -s
+```
 
 # Developer Reference
 
