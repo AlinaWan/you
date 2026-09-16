@@ -1,0 +1,45 @@
+name: Pull Request Triage
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  initialize:
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Initialize pull request triage
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr edit "$PR_NUMBER" \
+            --add-label "needs triage"
+
+          CHANGED_FILES=$(gh pr diff "$PR_NUMBER" --name-only)
+
+          if echo "$CHANGED_FILES" | grep -Fqx "words.txt"; then
+            
+            gh pr comment "$PR_NUMBER" \
+              --body "$(cat <<'EOF'
+          Hi there! It looks like you modified `words.txt` directly in this Pull Request. If your intention was to submit a new word, please close this PR and submit your word by creating an [issue](https://github.com/AlinaWan/you/issues/new?template=add-word.yml) instead.
+
+          If this was accidental as part of a larger PR, please remove `words.txt` from your branch's commit history before updating the Pull Request. For example:
+
+          ```bash
+          git rebase -i <commit-hash>^
+          git push --force-with-lease
+          ```
+          EOF
+          )"
