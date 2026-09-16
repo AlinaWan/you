@@ -79,3 +79,4 @@ u8-2c2353	promises	2026-09-15	love,trust,memory,goodbye	Some hurt more after the
 c07f778cbf80	adore	2026-09-15	you,love	
 ab45805d0fd0	lilies	2026-09-15	flower,love,you	My favorite flower that you never bought me.
 a71e0ba33c7c	shame	2026-09-15		
+8787c850aa40	ending	2026-09-15	us,bitter,goodbye	I wish I didn't see it coming.
