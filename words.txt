@@ -92,3 +92,4 @@ ee57d636fbaf	tea	2026-09-16	food,bitter	It's gone cold.
 091f3c43417d	polaroid	2026-09-16	memory,dream	Shake it until it feels real again.
 b74fc6e7a182	me	2026-09-16	me	I don't even know who I am anymore.
 6440d9b0fae7	scared	2026-09-16	feeling	
+210c1fc59759	exhausted	2026-09-16	feeling,me	Something I always seem to feel.
