@@ -90,3 +90,4 @@ ee57d636fbaf	tea	2026-09-16	food,bitter	It's gone cold.
 1fffa537197a	pretty	2026-09-16	us,dream,longing,love	I dream of dressing pretty for you.
 6bdf72036ba4	home	2026-09-16	you,miss,love	You felt more like one than the place I lived.
 091f3c43417d	polaroid	2026-09-16	memory,dream	Shake it until it feels real again.
+b74fc6e7a182	me	2026-09-16	me	I don't even know who I am anymore.
