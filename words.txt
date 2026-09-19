@@ -106,3 +106,4 @@ fed34584ce8e	bunnies	2026-09-19	animal
 89ae0c5873de	same	2026-09-19	you,bitter,regret	You haven't changed one bit.
 7c5d3c4e8796	fate	2026-09-19	dream,bitter	Do you believe in it?
 7870c5b7db3f	cruel	2026-09-19	you,bitter,regret	The way you treated me was a cruel and unusual punishment.
+376a865e0188	rubber band	2026-09-19	me,bitter	The sharp cherry strakes on my wrist when I snap it every time I think of you.
