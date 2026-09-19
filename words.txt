@@ -108,3 +108,4 @@ fed34584ce8e	bunnies	2026-09-19	animal
 7870c5b7db3f	cruel	2026-09-19	you,bitter,regret	The way you treated me was a cruel and unusual punishment.
 376a865e0188	rubber band	2026-09-19	me,bitter	The sharp cherry strakes on my wrist when I snap it every time I think of you.
 5250dd7b1473	half-hearted	2026-09-19	bitter,regret,love	But I want to love with all my heart.
+cace3ce3d65b	irrationality	2026-09-19	me,memory,you,us,unrequited	In reality, it should change nothing, but it's the fact that choosing to push you out of my mind makes me feel like I'm losing the only piece of you I never had to begin with.
