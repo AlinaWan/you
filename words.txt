@@ -123,3 +123,4 @@ d7d19be05b10	stars	2026-09-19	light,place	All of them have a reason.
 a482ef3e56ac	overtrusting	2026-09-20	me,you,love,light,unrequited	I would hold a burning candle in my hand while the wax dripped into my palm just to give you light.
 19e63709c62f	alone	2026-09-20	me,bitter	I feel like I am, even when I'm not.
 30a10929dd55	cigarette	2026-09-20	comfort	Got a light?
+aebbd72db5ea	call	2026-09-20	bitter,regret,goodbye,unrequited	I'm sitting here trying to convince you to call.
