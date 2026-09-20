@@ -125,3 +125,4 @@ a482ef3e56ac	overtrusting	2026-09-20	me,you,love,light,unrequited	I would hold a
 30a10929dd55	cigarette	2026-09-20	comfort	Got a light?
 aebbd72db5ea	call	2026-09-20	bitter,regret,goodbye,unrequited	I'm sitting here trying to convince you to call.
 u19-5707bd	stab	2026-09-20	you,love,pain	I knew it would hurt, but the wound won't go away. I can't forget you.
+aee2eb982b51	left	2026-09-20	bitter	Why the fuck does no one care about me?
