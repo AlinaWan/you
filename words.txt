@@ -134,3 +134,4 @@ fe393d8a6e98	我不知道	2026-09-20	phrase,me,lost,hopeless	I don't know what t
 95fa7586d0f7	sleep	2026-09-20	you,dream,longing	Maybe in my dreams, things would be better.
 u20-b0aa9d	understand	2026-09-20	you,me,us	If only I could have shown you my world, maybe you would've understood how hard it was to make my decision.
 u21-62e067	words	2026-09-20		Such a strong form of communication, yet when needed the most they fall short.
+d261cf800409	overwhelmed	2026-09-20	me,bitter,goodbye,hopeless	I'm giving up.
