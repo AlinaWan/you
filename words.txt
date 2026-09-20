@@ -121,3 +121,4 @@ d7d19be05b10	stars	2026-09-19	light,place	All of them have a reason.
 67a862b32803	quaint	2026-09-19	us,love,unrequited,dream,longing	I dreamed of living a quiet life with you; one where we didn’t need to prove anything to the world.
 7a759bd5d72a	236	2026-09-20	you,love	The number of notes in my phone written about you.
 a482ef3e56ac	overtrusting	2026-09-20	me,you,love,light,unrequited	I would hold a burning candle in my hand while the wax dripped into my palm just to give you light.
+19e63709c62f	alone	2026-09-20	me,bitter	I feel like I am, even when I'm not.
