@@ -150,3 +150,4 @@ d68098ec61f6	body	2026-09-23	you,love,dream,longing	Yours was the only one that 
 55dd1daa3322	ache	2026-09-23	regret,longing,you	I lied; I need you.
 7f569b0d2706	void	2026-09-23	you,dream,longing,love,miss	I just wish you were here to hold me in your arms.
 u24-1053b0	midterms	2026-09-23	pain,missing,dying	An endless deluge of pain and suffering; where is your company when I need it most?
+u25-56e6c7	ankle	2026-09-23	me,pain	Sprained; can no longer run from my problems. Must face them head-on.
