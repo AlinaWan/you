@@ -16,6 +16,8 @@ By submitting a code contribution, you agree to the [Contributor License Agreeme
 git commit -s
 ```
 
+If the Pull Requests tab is missing, PRs are currently not being accepted.
+
 # Developer Reference
 
 ## Local Development
