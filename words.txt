@@ -164,3 +164,4 @@ c1921c0d5d92	passenger princess	2026-09-26	miss
 eb9f399dcfa7	kansas	2026-09-27	place,peace,bitter	I want to move, but my loneliness will just pack up with me.
 2dda6688b147	leaving	2026-09-27	bitter,longing	Come with me to leave this wretched place.
 a45503cbf046	instability	2026-09-27	regret,bitter,hopeless,longing,dream,us	I'd rather have a boring, stable life than an erratic, exciting life. Unfortunately mine is just boring and erratic.
+2162b4e418a9	unnoticed	2026-09-27	me,you,unrequited,bitter	If I disappeared tomorrow, would you still look for me?
