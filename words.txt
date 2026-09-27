@@ -170,3 +170,4 @@ a45503cbf046	instability	2026-09-27	regret,bitter,hopeless,longing,dream,us	I'd 
 45a47a884e54	come back	2026-09-27	phrase,lost,unrequited,us,you	If only we could make it, I'd give you all my life… my love.
 5c4f7f44841d	mi amor	2026-09-27	you,love,longing,dream,regret,unrequited,hopeless,us	You're still the only one I can imagine a real life with.
 a01a804d8ee6	silence	2026-09-27	regret,miss,love,memory,you	The one after so many things changed.
+fc2e46e9eb86	heart	2026-09-27	unrequited,me,hopeless	Is mine really worth so little?
