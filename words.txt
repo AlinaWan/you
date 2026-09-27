@@ -162,3 +162,4 @@ c1921c0d5d92	passenger princess	2026-09-26	miss
 7a3234a7104a	cute	2026-09-26	you,love	
 02cde75b2c93	weak	2026-09-27	me,regret	I wasn't made for this world; I can't do anything.
 eb9f399dcfa7	kansas	2026-09-27	place,peace,bitter	I want to move, but my loneliness will just pack up with me.
+2dda6688b147	leaving	2026-09-27	bitter,longing	Come with me to leave this wretched place.
