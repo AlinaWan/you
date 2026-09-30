@@ -192,3 +192,4 @@ f75aee58c7bb	used to be	2026-09-28	phrase,us,miss,regret	I miss you; do you miss
 af30dff43605	bite	2026-09-29		
 u29-62078b	roblox	2026-09-29	us,memory,happy	It doesn't feel the same anymore; I wish I could play with you again.
 b28c2102771b	wasted	2026-09-30		
+64cef8cc2254	eyes	2026-09-30	you,miss,love,color	I miss the way you looked at me with your glassy espresso-brown ones.
