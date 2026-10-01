@@ -199,3 +199,4 @@ d7362dce3dfd	something	2026-10-01	us,love,feeling,you	How can I just forget that
 3b269212a94a	house	2026-10-01		My dream is to live in a condo with you and our two kids. I'd cook for you and we'd do the laundry together.
 b1ec090e292a	team	2026-10-01	song,love	By Lorde.
 76d8221e9196	abandoned	2026-10-01	bitter,regret,unrequited	Once you find someone new to get close to, you'll just wrong me again.
+35c464580902	trust issues	2026-10-01	feeling,regret,still	You ask me why I don't trust you, but you never cared enough to realize how much you hurt me. You wouldn't apologize anyways.
