@@ -206,3 +206,4 @@ b1ec090e292a	team	2026-10-01	song,love	By Lorde.
 243b26c198de	heartbeat	2026-10-01	you,love	Yours used to beat so fast when I laid my head on your chest.
 2d901dbb5ef9	warmth	2026-10-01	you,love,comfort	
 af65cca8f468	married	2026-10-01	us,love	What we should be.
+077950192213	tragedy	2026-10-02	unrequited,hopeless	What our love is.
