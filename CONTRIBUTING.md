@@ -46,10 +46,11 @@ readme\
 └── style.css
 ```
 
-Each part must include a `readme-href=` comment immediately after the `<!DOCTYPE html>` declaration:
+Each part must include a `readme-href=` and `readme-alt=` comment immediately after the `<!DOCTYPE html>` declaration:
 ```html
 <!DOCTYPE html>
 <!-- readme-href=https://alinawan.github.io/you/ -->
+<!-- readme-alt=you project — A collection of words, memories, and little things left unsaid. -->
 ```
 
 Each part has a corresponding dark and light image, which are generated in the [`images/readme/`](./images/readme/) directory and referenced in the generated README.

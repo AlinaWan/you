@@ -14,6 +14,7 @@
     <img
       src="images/readme/part-0-light.webp"
       width="100%"
+      alt="A collection of words, memories, and little things left unsaid."
     >
   </picture>
 </a>
@@ -31,6 +32,7 @@
     <img
       src="images/readme/part-1-light.webp"
       width="100%"
+      alt="Add a word, memory, or little thing by submitting a word."
     >
   </picture>
 </a>
@@ -48,6 +50,7 @@
     <img
       src="images/readme/part-2-light.webp"
       width="100%"
+      alt="Add name attributions to words by supporting the project."
     >
   </picture>
 </a>
@@ -65,6 +68,7 @@
     <img
       src="images/readme/part-3-light.webp"
       width="100%"
+      alt="Words, memories, and little things."
     >
   </picture>
 </a>
