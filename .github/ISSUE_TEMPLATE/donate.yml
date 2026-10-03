@@ -9,7 +9,7 @@ body:
     attributes:
       value: |
         > [!IMPORTANT]
-        > Donations support me, the developer of the you project, and give me motivation to continue developing and maintaining it. Name attributions are an optional thank-you perk for donors, not a purchase or guaranteed service.
+        > Donations support me, the developer of the **you** project, and give me motivation to continue developing and maintaining it. Name attributions are an optional thank-you perk for donors, not a purchase or guaranteed service.
         >
         > Donations are manually reviewed and approved. Submitting this issue does not guarantee that your requested names will be added.
         >
@@ -33,7 +33,7 @@ body:
         >
         > Please submit no more name assignments than your donation tier allows. Extra assignments will not be added.
         >
-        > Custom colors must be six-digit hexadecimal colors, such as `#ff5733`.
+        > Custom colors must be six-digit hexadecimal colors, such as `#ff5733`. Leaving the color section blank means the default color will be used.
         >
         > To choose a word, submit its **word ID**. The ID is included in the URL when you copy the link to a word.
         > You can also view `words.txt` directly for the entire list of words. For example:
@@ -41,8 +41,6 @@ body:
         > `https://alinawan.github.io/you/?track=52ee0ac56285`
         >
         > The word ID here is `52ee0ac56285`.
-        >
-        > Leaving the color section blank means the default color will be used.
         >
         > **Please send USDT on Solana only. Do not send USDT using another network.**
 

@@ -14,7 +14,7 @@
     <img
       src="images/readme/part-0-light.webp"
       width="100%"
-      alt="A collection of words, memories, and little things left unsaid."
+      alt="you project — A collection of words, memories, and little things left unsaid."
     >
   </picture>
 </a>
