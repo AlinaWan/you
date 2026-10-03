@@ -15,7 +15,9 @@ permissions:
 
 jobs:
   initialize:
-    if: github.event_name == 'issues'
+    if: >
+      github.event_name == 'issues' &&
+      contains(github.event.issue.labels.*.name, 'word')
     runs-on: ubuntu-latest
 
     steps:
@@ -85,7 +87,9 @@ jobs:
           )"
 
   command:
-    if: github.event_name == 'issue_comment'
+    if: >
+      github.event_name == 'issue_comment' &&
+      contains(github.event.issue.labels.*.name, 'word')
     runs-on: ubuntu-latest
 
     steps:

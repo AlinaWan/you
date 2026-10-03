@@ -4,6 +4,8 @@
 
 You can submit a new word to the plane by creating an [Issue](https://github.com/AlinaWan/you/issues/new?template=add-word.yml) and following the instructions provided.
 
+You can also add name attributions to existing words by making a [donation](https://github.com/AlinaWan/you/issues/new?template=donate.yml) and following the instructions provided.
+
 By submitting content, you must agree to the Submission Licence included in the submission form. Submissions remain the property of their respective authors, but are licensed to the you project under the terms of that agreement.
 
 ## Code Contributions
@@ -81,6 +83,14 @@ The corresponding validation patterns are:
 
 * Maintainer-generated: `^[0-9a-fA-F]{12}$`
 * User-generated: `^u\d+-[0-9a-fA-F]{6}$`
+
+### attributions.txt
+A newline-delimited list of tab-delimited fields.
+```text
+WordId	Attribution	YYYY-MM-DD	[TransactionSignature]	[Color]
+```
+
+`WordId` references the ID of the word to which the attribution belongs.
 
 ## URL Query Parameters
 | Parameter | Arguments                                                           |

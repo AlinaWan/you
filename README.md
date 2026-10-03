@@ -35,7 +35,7 @@
   </picture>
 </a>
 
-<a href="https://alinawan.github.io/you/">
+<a href="https://github.com/AlinaWan/you/issues/new?template=donate.yml">
   <picture>
     <source
       media="(prefers-color-scheme: dark)"
@@ -47,6 +47,23 @@
     >
     <img
       src="images/readme/part-2-light.webp"
+      width="100%"
+    >
+  </picture>
+</a>
+
+<a href="https://alinawan.github.io/you/">
+  <picture>
+    <source
+      media="(prefers-color-scheme: dark)"
+      srcset="images/readme/part-3-dark.webp"
+    >
+    <source
+      media="(prefers-color-scheme: light)"
+      srcset="images/readme/part-3-light.webp"
+    >
+    <img
+      src="images/readme/part-3-light.webp"
       width="100%"
     >
   </picture>

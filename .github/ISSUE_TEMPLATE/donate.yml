@@ -1,0 +1,114 @@
+name: Add Name Attributions (Donate)
+description: Donate USDT to add name attributions to words.
+title: "[DONATION] Add name attributions"
+labels:
+  - donation
+  - pending
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!IMPORTANT]
+        > Donations are manually reviewed and approved. Submitting this issue does not guarantee that your requested names will be added.
+        >
+        > **Please do not submit private or identifying information about any person.**
+        > First names are permitted, but do not include usernames, last names, addresses, phone numbers, dates that identify a person, links to outside sources, information about someone's family or place of employment, or other details that could reasonably be used to identify, locate, or contact them.
+        >
+        > ### USDT Donation
+        >
+        > **Network:** Solana
+        >
+        > **Address:** `QUvS5qzbvpvYisrVawiAdRF768JDH5o8jpWM3hUbz89`
+        >
+        > **Donation Tiers**
+        >
+        > - **$5 USDT** — up to 1 name
+        > - **$15 USDT** — up to 5 names
+        > - **$25 USDT** — up to 10 names, with an optional custom color for each name
+        >
+        > Each name appears in the details section of the word's search result on the website.
+        > You may assign multiple names to the same word or distribute them across different words.
+        >
+        > Please submit no more names than your donation tier allows. Extra names will not be added.
+        >
+        > Custom colors must be six-digit hexadecimal colors, such as `#ff5733`.
+        >
+        > To choose a word, submit its **word ID**. The ID is included in the URL when you copy the link to a word.
+        > You can also view `words.txt` directly for the entire list of words. For example:
+        >
+        > `https://alinawan.github.io/you/?track=52ee0ac56285`
+        >
+        > The word ID here is `52ee0ac56285`.
+        >
+        > Leaving the color section blank means the default color will be used.
+        >
+        > **Please send USDT on Solana only. Do not send USDT using another network.**
+
+  - type: input
+    id: transaction
+    attributes:
+      label: Transaction Signature
+      description: The full Solana transaction signature for your USDT donation.
+      placeholder: e.g., 5Vz9...
+    validations:
+      required: true
+
+  - type: input
+    id: amount
+    attributes:
+      label: Amount (USDT)
+      description: |
+        Enter the amount of USDT sent.
+        Donation tiers are determined by the amount of USDT actually received
+        by the donation address, not the amount entered here.
+      placeholder: "15"
+    validations:
+      required: true
+
+  - type: textarea
+    id: names
+    attributes:
+      label: Names & Word Assignments
+      description: |
+        Enter one name per line using the format: `Name | Word ID | Color`.
+        Custom colors are only available for donations of the $25 USDT tier.
+        Leave Color blank when not using a custom color.
+      placeholder: |
+        Alice | 632ebce5300e |
+        Bob | 632ebce5300e |
+        Charlie | 5fecfec76cb6 | #ff5733
+        Diana | 5fecfec76cb6 |
+        Eve | 5fecfec76cb6 |
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        > [!NOTE]
+        > Your transaction will be verified on the blockchain before your submission is approved.
+        > Each transaction signature can only be used for one donation submission.
+
+  - type: checkboxes
+    id: license
+    attributes:
+      label: Submission Licence
+      description: Please read the following agreement before submitting.
+      options:
+        - label: >-
+            I agree to the following Submission Licence: I represent and warrant
+            that I have the necessary rights to grant this licence. By submitting
+            this content, I grant Angelina and the **you** project a **non-exclusive,
+            worldwide, perpetual, irrevocable, royalty-free, transferable and
+            sublicensable licence** to use, reproduce, modify, adapt, transform,
+            create derivative works from, publish, distribute, display, perform,
+            transmit, store, archive, and otherwise use my submission, in whole
+            or in part, **in any medium and for any purpose, without limitation
+            or further permission from me and without payment or attribution**.
+            I retain ownership of my submission and may continue to use it
+            myself or license it to others. **To the extent permitted by
+            applicable law, I waive any moral rights I may have in the
+            submission in favour of Angelina and the you project, including
+            rights relating to attribution and the integrity of the
+            submission.**
+          required: true

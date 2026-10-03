@@ -73,8 +73,20 @@ export function searchScore(item, query) {
         return 100 + wordIndex * 10 + word.length;
     }
 
+    const donorIndex = item.donors?.findIndex(
+        donor => normalize(donor.name).includes(query)
+    );
+
+    if (donorIndex !== undefined && donorIndex !== -1) {
+        const donor = item.donors[donorIndex];
+
+        return 500 +
+            donorIndex +
+            normalize(donor.name).length;
+    }
+
     if (item.tags?.some(tag => normalize(tag).includes(query))) {
-        return 500 + item.tags.join("").length;
+        return 600 + item.tags.join("").length;
     }
 
     const description = item.description
@@ -110,6 +122,180 @@ export function highlightMatch(text, query) {
             return escapeHTML(part);
         })
         .join("");
+}
+function donorHash(value) {
+    let hash = 2166136261;
+
+    for (let i = 0; i < value.length; i++) {
+        hash ^= value.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+    }
+
+    return hash >>> 0;
+}
+
+function donorRandom(seed) {
+    seed += 0x6D2B79F5;
+
+    let value = seed;
+    value = Math.imul(value ^ value >>> 15, value | 1);
+    value ^= value + Math.imul(value ^ value >>> 7, value | 61);
+
+    return ((value ^ value >>> 14) >>> 0) / 4294967296;
+}
+
+function layoutDonorNames(container) {
+    const names = [...container.querySelectorAll(".donorName")];
+
+    if (names.length === 0) {
+        return;
+    }
+
+    const padding = 5;
+    const gap = 7;
+    const containerWidth = container.clientWidth;
+
+    const entries = names
+        .map((element, index) => ({
+            element,
+            index
+        }))
+        .sort((a, b) => {
+            const widthDifference =
+                b.element.offsetWidth - a.element.offsetWidth;
+
+            if (widthDifference !== 0) {
+                return widthDifference;
+            }
+
+            return a.index - b.index;
+        });
+
+    /*
+     * Start small and increase until every name fits.
+     */
+    let containerHeight = 32;
+
+    while (true) {
+        const placed = [];
+        let failed = false;
+
+        for (const entry of entries) {
+            const name = entry.element;
+
+            const seed = donorHash(
+                `${name.textContent.trim()}:${entry.index}`
+            );
+
+            const angle =
+                -0.175 +
+                donorRandom(seed) * 0.35;
+
+            name.style.transform = `rotate(${angle}rad)`;
+
+            const nameWidth = name.offsetWidth;
+            const nameHeight = name.offsetHeight;
+
+            const sin = Math.abs(Math.sin(angle));
+            const cos = Math.abs(Math.cos(angle));
+
+            const rotatedWidth =
+                nameWidth * cos +
+                nameHeight * sin;
+
+            const rotatedHeight =
+                nameWidth * sin +
+                nameHeight * cos;
+
+            const randomSeed = donorHash(
+                `${name.textContent.trim()}:${entry.index}:position`
+            );
+
+            const availableWidth =
+                Math.max(
+                    0,
+                    containerWidth -
+                    rotatedWidth -
+                    padding * 2
+                );
+
+            const availableHeight =
+                Math.max(
+                    0,
+                    containerHeight -
+                    rotatedHeight -
+                    padding * 2
+                );
+
+            let found = false;
+
+            /*
+             * Try deterministic positions throughout the available
+             * area. The same donor/index always gets the same result.
+             */
+            for (let attempt = 0; attempt < 500; attempt++) {
+                const xRandom = donorRandom(
+                    randomSeed + attempt * 0x9E3779B9
+                );
+
+                const yRandom = donorRandom(
+                    randomSeed + attempt * 0x85EBCA6B
+                );
+
+                const x =
+                    padding +
+                    xRandom * availableWidth;
+
+                const y =
+                    padding +
+                    yRandom * availableHeight;
+
+                const rect = {
+                    left: x - gap,
+                    top: y - gap,
+                    right: x + rotatedWidth + gap,
+                    bottom: y + rotatedHeight + gap
+                };
+
+                const overlaps = placed.some(other =>
+                    rect.right > other.left &&
+                    rect.left < other.right &&
+                    rect.bottom > other.top &&
+                    rect.top < other.bottom
+                );
+
+                if (overlaps) {
+                    continue;
+                }
+
+                name.style.left =
+                    `${x + (rotatedWidth - nameWidth) / 2}px`;
+
+                name.style.top =
+                    `${y + (rotatedHeight - nameHeight) / 2}px`;
+
+                placed.push(rect);
+                found = true;
+                break;
+            }
+
+            if (!found) {
+                failed = true;
+                break;
+            }
+        }
+
+        if (!failed) {
+            container.style.height = `${containerHeight}px`;
+            return;
+        }
+
+        /*
+         * There wasn't enough room. Give the container more height
+         * and try again.
+         */
+        containerHeight += 8;
+    }
 }
 
 export function updateSearch() {
@@ -179,85 +365,124 @@ export function updateSearch() {
 
             return `
                 <div class="result" data-index="${result.index}">
-                    <div class="resultWord">
-                        ${highlightMatch(item.word, query)}
-                        ${duplicateBadge}
-                    </div>
+                    <div class="resultMain">
+                        <div class="resultWord">
+                            ${highlightMatch(item.word, query)}
+                            ${duplicateBadge}
+                        </div>
 
-                    <div class="resultDetails">
-                        <div class="detailsInner">
-                            ${item.date ? `
-                                <div class="detailRow">
-                                    <span class="detailLabel">date</span>
-                                    <span>
-                                        ${escapeHTML(item.date)}
-                                    </span>
+                        <div class="resultDetails">
+                            <div class="detailsInner">
+                                ${item.date ? `
+                                    <div class="detailRow">
+                                        <span class="detailLabel">date</span>
+                                        <span>${escapeHTML(item.date)}</span>
+                                    </div>
+                                ` : ""}
+
+                                ${item.tags?.length ? `
+                                    <div class="detailRow">
+                                        <span class="detailLabel">tags</span>
+                                        <span>
+                                            ${item.tags.map(tag => `
+                                                <span class="tag">#${escapeHTML(tag)}</span>
+                                            `).join("")}
+                                        </span>
+                                    </div>
+                                ` : ""}
+
+                                ${item.description ? `
+                                    <div class="detailRow">
+                                        <span class="detailLabel">note</span>
+                                        <span>
+                                            ${escapeHTML(item.description)}
+                                        </span>
+                                    </div>
+                                ` : ""}
+
+                                ${item.donors?.length ? `
+                                    <div class="resultDonors">
+                                        ${item.donors.map(donor => `
+                                            <span
+                                                class="donorName"
+                                                ${donor.color ? `style="--donor-color: ${escapeHTML(donor.color)}"` : ""}
+                                            >${escapeHTML(donor.name)}</span>
+                                        `).join("")}
+                                    </div>
+                                ` : ""}
+
+                                <div class="resultActions">
+                                    <button
+                                        class="copyButton"
+                                        type="button"
+                                        data-word-id="${escapeHTML(item.id)}"
+                                        aria-label="Copy link for ${escapeHTML(item.word)}"
+                                    >
+                                        ${copyLinkIcon}
+                                    </button>
+
+                                    <button
+                                        class="trackButton"
+                                        type="button"
+                                        data-word-id="${escapeHTML(item.id)}"
+                                        aria-label="${tracking
+                                ? `Stop tracking ${escapeHTML(item.word)}`
+                                : `Track ${escapeHTML(item.word)}`}"
+                                    >
+                                        ${tracking
+                                ? `
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="16"
+                                                    height="16"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    aria-hidden="true"
+                                                >
+                                                    <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-6.94"></path>
+                                                    <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.77 21.77 0 0 1-2.06 3.19"></path>
+                                                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                                                    <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
+                                                </svg>
+                                            `
+                                : `
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="16"
+                                                    height="16"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    aria-hidden="true"
+                                                >
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                    <circle cx="12" cy="12" r="3"></circle>
+                                                </svg>
+                                            `
+                            }
+                                    </button>
                                 </div>
-                            ` : ""}
-
-                            ${item.tags?.length ? `
-                                <div class="detailRow">
-                                    <span class="detailLabel">tags</span>
-                                    <span>
-                                        ${item.tags
-                        .map(tag => `
-                                                <span class="tag">
-                                                    #${escapeHTML(tag)}
-                                                </span>
-                                            `)
-                        .join("")}
-                                    </span>
-                                </div>
-                            ` : ""}
-
-                            ${item.description ? `
-                                <div class="detailRow">
-                                    <span class="detailLabel">note</span>
-                                    <span>
-                                        ${escapeHTML(item.description)}
-                                    </span>
-                                </div>
-                            ` : ""}
-                            <div class="resultActions">
-                                <button
-                                    class="copyButton"
-                                    type="button"
-                                    data-word-id="${escapeHTML(item.id)}"
-                                    aria-label="Copy tracking link for ${escapeHTML(item.word)}"
-                                >
-                                    ${copyLinkIcon}
-                                </button>
-
-                                <button
-                                    class="trackButton ${tracking ? "tracking" : ""}"
-                                    type="button"
-                                    data-word-id="${escapeHTML(item.id)}"
-                                    aria-label="${tracking ? `Stop tracking ${escapeHTML(item.word)}` : `Track ${escapeHTML(item.word)}`}"
-                                >
-                                ${tracking ? `
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                        <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-6.94"></path>
-                                        <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.77 21.77 0 0 1-2.06 3.19"></path>
-                                        <line x1="1" y1="1" x2="23" y2="23"></line>
-                                        <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
-                                    </svg>
-                                ` : `
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                        <circle cx="12" cy="12" r="3"></circle>
-                                    </svg>
-                                `}
-                                </button>
                             </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
         })
         .join("");
 
     requestAnimationFrame(() => {
         resultsWrapper.classList.add("open");
+
+        resultsScroll
+            .querySelectorAll(".resultDonors")
+            .forEach(layoutDonorNames);
     });
 }
 

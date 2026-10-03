@@ -11,10 +11,11 @@ body:
         > [!IMPORTANT]
         > 1. Please check `words.txt` for style, conventions, and common tags before submitting. 
         > 2. Ensure your submitted word is written in **all lowercase**.
-        > 3. Use common tags if possible. New tags will be considered on a case-by-case basis.
-        > 4. Ensure your note forms a grammatically valid sentence when structured as: "`<Word>`: `<Note>`"
-        > 5. Try not to use your word in the note. This is not a hard rule.
-        > 6. Maintainers may edit submissions prior to approval to maintain consistency with the project's vision.
+        > 3. **Do not submit a person's name**, except when it clearly and unambiguously identifies a public figure. Generic or ambiguous names such as `John` do not qualify. Name attributions are handled separately.
+        > 4. Use common tags if possible. New tags will be considered on a case-by-case basis.
+        > 5. Ensure your note forms a grammatically valid sentence when structured as: "`<Word>`: `<Note>`"
+        > 6. Try not to use your word in the note. This is not a hard rule.
+        > 7. Maintainers may edit submissions prior to approval to maintain consistency with the project's vision.
 
         ✅ Example of a good submission:
         ```yml
