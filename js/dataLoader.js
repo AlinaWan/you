@@ -28,7 +28,7 @@ export async function loadWordsFromRepository() {
             .forEach(line => {
                 const parts = line.split("\t");
                 const wordId = (parts[0] || "").trim();
-                const name = (parts[1] || "").trim();
+                const name = "♡ " + (parts[1] || "").trim(); // Thin space after heart symbol (U+2009)
                 const color = (parts[4] || "").trim();
 
                 if (wordId && name) {
