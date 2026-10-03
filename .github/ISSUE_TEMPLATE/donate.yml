@@ -9,6 +9,8 @@ body:
     attributes:
       value: |
         > [!IMPORTANT]
+        > Donations support me, the developer of the you project, and give me motivation to continue developing and maintaining it. Name attributions are an optional thank-you perk for donors, not a purchase or guaranteed service.
+        >
         > Donations are manually reviewed and approved. Submitting this issue does not guarantee that your requested names will be added.
         >
         > **Please do not submit private or identifying information about any person.**
@@ -22,14 +24,14 @@ body:
         >
         > **Donation Tiers**
         >
-        > - **$5 USDT** — up to 1 name
-        > - **$15 USDT** — up to 5 names
-        > - **$25 USDT** — up to 10 names, with an optional custom color for each name
+        > - **$5 USDT** — up to 1 name assignment
+        > - **$15 USDT** — up to 5 name assignments
+        > - **$25 USDT** — up to 10 name assignments, with an optional custom color for each name
         >
         > Each name appears in the details section of the word's search result on the website.
-        > You may assign multiple names to the same word or distribute them across different words.
+        > You may assign multiple names to the same word or distribute your assignments across different words.
         >
-        > Please submit no more names than your donation tier allows. Extra names will not be added.
+        > Please submit no more name assignments than your donation tier allows. Extra assignments will not be added.
         >
         > Custom colors must be six-digit hexadecimal colors, such as `#ff5733`.
         >
@@ -88,6 +90,7 @@ body:
         > [!NOTE]
         > Your transaction will be verified on the blockchain before your submission is approved.
         > Each transaction signature can only be used for one donation submission.
+        > If you make multiple donations, they must use separate transactions and a new issue for each.
 
   - type: checkboxes
     id: license
