@@ -210,3 +210,4 @@ af65cca8f468	married	2026-10-01	us,love	What we should be.
 2817e5f5a897	boyfriend	2026-10-03	you,miss	Happy National Boyfriend Day, even though you aren't mine.
 211c6948691c	commitment	2026-10-03	you,love,unrequited,regret,miss,memory	I miss the feeling I felt when I thought we'd last forever.
 d0e2728df790	in my room	2026-10-03	song,you	By Julia Wolf.
+a4f11af45d45	sacrifice	2026-10-03	feeling,regret,us	Not knowing which one to leave behind is killing me inside.
