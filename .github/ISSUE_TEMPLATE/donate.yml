@@ -9,40 +9,25 @@ body:
     attributes:
       value: |
         > [!IMPORTANT]
-        > Donations support me, the developer of the **you** project, and give me motivation to continue developing and maintaining it. Name attributions are an optional thank-you perk for donors, not a purchase or guaranteed service.
+        > Donations support the **you** project and give me motivation to continue developing and maintaining it. Name attributions are a thank-you perk for donors.
         >
-        > Donations are manually reviewed and approved. Submitting this issue does not guarantee that your requested names will be added.
+        > You can use a name attribution to associate someone with a word that reminds you of them, a memory, or something left unsaid.
         >
-        > **Please do not submit private or identifying information about any person.**
-        > First names are permitted, but do not include usernames, last names, addresses, phone numbers, dates that identify a person, links to outside sources, information about someone's family or place of employment, or other details that could reasonably be used to identify, locate, or contact them.
+        > You can donate by tipping **USDT** on the **Solana** network to the address:
+        > `QUvS5qzbvpvYisrVawiAdRF768JDH5o8jpWM3hUbz89`
         >
-        > ### USDT Donation
+        > Donation Tiers
         >
-        > **Network:** Solana
+        > * $5 USDT — up to 1 name assignment
+        > * $15 USDT — up to 5 name assignments
+        > * $25 USDT — up to 10 name assignments, with an optional custom color for each name
         >
-        > **Address:** `QUvS5qzbvpvYisrVawiAdRF768JDH5o8jpWM3hUbz89`
+        > 1. Each name appears in the details section of the word's search result on the website.
+        > 2. You may assign multiple names to the same word or distribute your assignments across different words.
+        > 3. Please submit no more name assignments than your donation tier allows.
+        > 4. **Please send USDT on Solana only. Do not send USDT using another network.**
         >
-        > **Donation Tiers**
-        >
-        > - **$5 USDT** — up to 1 name assignment
-        > - **$15 USDT** — up to 5 name assignments
-        > - **$25 USDT** — up to 10 name assignments, with an optional custom color for each name
-        >
-        > Each name appears in the details section of the word's search result on the website.
-        > You may assign multiple names to the same word or distribute your assignments across different words.
-        >
-        > Please submit no more name assignments than your donation tier allows. Extra assignments will not be added.
-        >
-        > Custom colors must be six-digit hexadecimal colors, such as `#ff5733`. Leaving the color section blank means the default color will be used.
-        >
-        > To choose a word, submit its **word ID**. The ID is included in the URL when you copy the link to a word.
-        > You can also view `words.txt` directly for the entire list of words. For example:
-        >
-        > `https://alinawan.github.io/you/?track=52ee0ac56285`
-        >
-        > The word ID here is `52ee0ac56285`.
-        >
-        > **Please send USDT on Solana only. Do not send USDT using another network.**
+        > Donations are manually reviewed and approved. Submitting this Issue does not guarantee that your requested names will be added.
 
   - type: input
     id: transaction
@@ -57,10 +42,7 @@ body:
     id: amount
     attributes:
       label: Amount (USDT)
-      description: |
-        Enter the amount of USDT sent.
-        Donation tiers are determined by the amount of USDT actually received
-        by the donation address, not the amount entered here.
+      description: The amount of USDT sent.
       placeholder: "15"
     validations:
       required: true
@@ -70,9 +52,7 @@ body:
     attributes:
       label: Names & Word Assignments
       description: |
-        Enter one name per line using the format: `Name | Word ID | Color`.
-        Custom colors are only available for donations of the $25 USDT tier.
-        Leave Color blank when not using a custom color.
+        Enter one name per line using the format: `Name | Word ID | Color (Hexadecimal)`.
       placeholder: |
         Alice | 632ebce5300e |
         Bob | 632ebce5300e |
@@ -85,31 +65,15 @@ body:
   - type: markdown
     attributes:
       value: |
+        > [!IMPORTANT]
+        > 1. First names are allowed, but do not include usernames, last names, or any other details that could be used to identify or contact a person.
+        > 2. The Word ID is included in the URL when you copy the link to a word. You can also view `words.txt` directly for the entire list of words.
+        > 3. Custom colors are only available for donations of the $25 USDT tier. Leave Color blank when not using a custom color.
+
+  - type: markdown
+    attributes:
+      value: |
         > [!NOTE]
         > Your transaction will be verified on the blockchain before your submission is approved.
         > Each transaction signature can only be used for one donation submission.
-        > If you make multiple donations, they must use separate transactions and a new issue for each.
-
-  - type: checkboxes
-    id: license
-    attributes:
-      label: Submission Licence
-      description: Please read the following agreement before submitting.
-      options:
-        - label: >-
-            I agree to the following Submission Licence: I represent and warrant
-            that I have the necessary rights to grant this licence. By submitting
-            this content, I grant Angelina and the **you** project a **non-exclusive,
-            worldwide, perpetual, irrevocable, royalty-free, transferable and
-            sublicensable licence** to use, reproduce, modify, adapt, transform,
-            create derivative works from, publish, distribute, display, perform,
-            transmit, store, archive, and otherwise use my submission, in whole
-            or in part, **in any medium and for any purpose, without limitation
-            or further permission from me and without payment or attribution**.
-            I retain ownership of my submission and may continue to use it
-            myself or license it to others. **To the extent permitted by
-            applicable law, I waive any moral rights I may have in the
-            submission in favour of Angelina and the you project, including
-            rights relating to attribution and the integrity of the
-            submission.**
-          required: true
+        > If you make multiple donations, please use a separate transaction signature and create a new Issue for each.
