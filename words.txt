@@ -219,3 +219,4 @@ b08f7cb588ce	mahal kita	2026-10-04	phrase,love,you	I love you.
 80f46edf8e1c	loved	2026-10-04	love,dream,longing,you	For someone to feel lucky to have you and think you're beautiful.
 b1ba8e43bbed	没有理由	2026-10-04	song,love,regret,you	By 杨胖雨 & Lambert.
 e7602bbdd972	princess	2026-10-04		Why you cut your wrists?
+2d16708d0e14	eastside	2026-10-05	song,love,regret,longing,us	By Benny Blanco, Halsey, & Khalid.
