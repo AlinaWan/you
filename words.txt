@@ -226,3 +226,4 @@ b1d8a9e9eaf8	time	2026-10-05	hope	It heals everything, and one day you'll meet a
 efd63afbf4ff	anew	2026-10-05	dream,hope,me	One day I'll leave this wretched life behind.
 da352793d555	telephone	2026-10-05	you,miss	Give me a ring?
 2eed3af0ef81	gaze	2026-10-05	you,miss,memory,love	I miss the way you used to look at me like you were in love.
+47e46f481c78	version	2026-10-05	you,miss,unrequited,still,goodbye	I'm still holding onto the one that doesn't exist anymore.
