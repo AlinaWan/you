@@ -69,29 +69,40 @@ images\
 ## Schemas
 The schemas documented here reflect the current implementation and are subject to change.
 
+The types and constraints below use SQL-like notation to describe the intended structure, validation rules, and logical relationship. They are not currently enforced automatically.
+
 ### words.txt
 A newline-delimited list of tab-delimited fields.
 ```text
-Id	Word	YYYY-MM-DD	[Comma-delimited tags]	[Note]
+id	word	date	[tags]	[note]
 ```
 
-`Id` uses one of the following formats:
+* `id TEXT PRIMARY KEY CHECK (id ~ '^[0-9a-f]{12}$' OR id ~ '^u\d+-[0-9a-f]{6}$')`
+* `word TEXT NOT NULL CHECK (word = LOWER(word))`
+* `date DATE NOT NULL`
+* `tags TEXT CHECK (tags = LOWER(tags))`
+* `note TEXT`
+
+`id` uses one of the following formats:
 
 * Maintainer-generated: 6 bytes represented as 12 hexadecimal characters.
 * User-generated: the GitHub issue number prefixed with `u`, followed by a hyphen and 3 bytes represented as 6 hexadecimal characters.
 
-The corresponding validation patterns are:
-
-* Maintainer-generated: `^[0-9a-fA-F]{12}$`
-* User-generated: `^u\d+-[0-9a-fA-F]{6}$`
+`tags` is a comma-delimited list of tags without whitespace.
 
 ### attributions.txt
 A newline-delimited list of tab-delimited fields.
 ```text
-WordId	Attribution	YYYY-MM-DD	[TransactionSignature]	[Color]
+word_id	attribution	date	[transaction_signature]	[color]
 ```
 
-`WordId` references the ID of the word to which the attribution belongs.
+* `word_id TEXT NOT NULL REFERENCES words(id) ON DELETE CASCADE`
+* `attribution TEXT NOT NULL`
+* `date DATE NOT NULL`
+* `transaction_signature TEXT`
+* `color CHAR(7) CHECK (color ~ '^#[0-9a-f]{6}$')`
+
+`word_id` references the ID of the word to which the attribution is associated.
 
 ## URL Query Parameters
 | Parameter | Arguments                                                           |
