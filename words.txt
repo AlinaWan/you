@@ -240,3 +240,4 @@ c4234d305f2b	pray	2026-10-08	you,us,love,longing,regret,light	That night, I pray
 67a6be5721d1	fly	2026-10-08	you,love,dream	Come back, and I'll take us anywhere you want.
 188b4b19cbca	fight	2026-10-08	you,regret,bitter,unrequited	Something you never even cared enough to do for me.
 e7f752e3a9d6	trust issues	2026-10-08	you,regret,bitter	I still chose to trust you after everything, and you still betrayed it.
+1d6c769b9ae0	hurts	2026-10-08	feeling,you,me,bitter,hopeless	It just does.
