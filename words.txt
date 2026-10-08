@@ -238,3 +238,4 @@ fd137e86f10a	stay	2026-10-08	you,love,unrequited,bitter,hope	The little kid insi
 c4234d305f2b	pray	2026-10-08	you,us,love,longing,regret,light	That night, I prayed more than I have for anything.
 3fb4dd501089	talk	2026-10-08	you,regret,bitter,unrequited	Something that doesn't work when only one person is doing it.
 67a6be5721d1	fly	2026-10-08	you,love,dream	Come back, and I'll take us anywhere you want.
+188b4b19cbca	fight	2026-10-08	you,regret,bitter,unrequited	Something you never even cared enough to do for me.
