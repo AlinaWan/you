@@ -242,3 +242,4 @@ c4234d305f2b	pray	2026-10-08	you,us,love,longing,regret,light	That night, I pray
 e7f752e3a9d6	trust issues	2026-10-08	you,regret,bitter	I still chose to trust you after everything, and you still betrayed it.
 1d6c769b9ae0	hurts	2026-10-08	feeling,you,me,bitter,hopeless	It just does.
 bfb6bc1e8ec7	care	2026-10-08	feeling,you,bitter,unrequited	Something you never seemed to do whenever you hurt me.
+7f556a37f81c	guilt trip	2026-10-08	you,bitter,feeling,regret,hopeless	Something you do every time I bring my feelings up, just to shut them down like they don't matter.
