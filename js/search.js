@@ -40,6 +40,13 @@ const clearSearchButton = document.getElementById("clearSearchButton");
 const resultsWrapper = document.getElementById("resultsWrapper");
 const resultsScroll = document.getElementById("resultsScroll");
 
+let wordCounts = {};
+let currentMatches = [];
+let displayedCount = 0;
+const BATCH_SIZE = 20;
+const threshold = 300;
+let isLoadingMore = false;
+
 export function normalize(value) {
     return value
         .toLowerCase()
@@ -57,6 +64,10 @@ export function escapeHTML(value) {
 }
 
 export function searchScore(item, query) {
+    if (query === "*") {
+        return 0;
+    }
+
     const word = normalize(item.word);
 
     if (word === query) {
@@ -298,16 +309,188 @@ function layoutDonorNames(container) {
     }
 }
 
+function appendNextBatch(query) {
+    if (displayedCount >= currentMatches.length || isLoadingMore) {
+        return;
+    }
+
+    isLoadingMore = true;
+
+    const nextBatch = currentMatches.slice(
+        displayedCount,
+        displayedCount + BATCH_SIZE
+    );
+
+    displayedCount += nextBatch.length;
+
+    const fragment = document.createDocumentFragment();
+    const newElements = [];
+
+    for (const result of nextBatch) {
+        const item = result.item;
+        const key = normalize(item.word);
+        const wordObj = wordObjects[result.index];
+        const tracking = isTracking(wordObj);
+
+        let duplicateBadge = "";
+
+        if (wordCounts[key] > 1) {
+            duplicateBadge = `
+                <span class="resultNumber">
+                    #${result.duplicateNumber}
+                </span>
+            `;
+        }
+
+        const resultElement = document.createElement("div");
+        resultElement.className = "result";
+        resultElement.dataset.index = result.index;
+
+        resultElement.innerHTML = `
+            <div class="resultMain">
+                <div class="resultWord">
+                    ${highlightMatch(item.word, query)}
+                    ${duplicateBadge}
+                </div>
+
+                <div class="resultDetails">
+                    <div class="detailsInner">
+                        ${item.date ? `
+                            <div class="detailRow">
+                                <span class="detailLabel">date</span>
+                                <span>${escapeHTML(item.date)}</span>
+                            </div>
+                        ` : ""}
+
+                        ${item.tags?.length ? `
+                            <div class="detailRow">
+                                <span class="detailLabel">tags</span>
+                                <span>
+                                    ${item.tags.map(tag => `
+                                        <span class="tag">#${escapeHTML(tag)}</span>
+                                    `).join("")}
+                                </span>
+                            </div>
+                        ` : ""}
+
+                        ${item.description ? `
+                            <div class="detailRow">
+                                <span class="detailLabel">note</span>
+                                <span>
+                                    ${escapeHTML(item.description)}
+                                </span>
+                            </div>
+                        ` : ""}
+
+                        ${item.donors?.length ? `
+                            <div class="resultDonors">
+                                ${item.donors.map(donor => `
+                                    <span
+                                        class="donorName"
+                                        ${donor.color
+                ? `style="--donor-color: ${escapeHTML(donor.color)}"`
+                : ""}
+                                    >${escapeHTML(donor.name)}</span>
+                                `).join("")}
+                            </div>
+                        ` : ""}
+
+                        <div class="resultActions">
+                            <button
+                                class="copyButton"
+                                type="button"
+                                data-word-id="${escapeHTML(item.id)}"
+                                aria-label="Copy link for ${escapeHTML(item.word)}"
+                            >
+                                ${copyLinkIcon}
+                            </button>
+
+                            <button
+                                class="trackButton"
+                                type="button"
+                                data-word-id="${escapeHTML(item.id)}"
+                                aria-label="${tracking
+                ? `Stop tracking ${escapeHTML(item.word)}`
+                : `Track ${escapeHTML(item.word)}`
+            }"
+                            >
+                                ${tracking
+                ? `
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="16"
+                                                height="16"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                aria-hidden="true"
+                                            >
+                                                <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-6.94"></path>
+                                                <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.77 21.77 0 0 1-2.06 3.19"></path>
+                                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                                                <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
+                                            </svg>
+                                        `
+                : `
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="16"
+                                                height="16"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                aria-hidden="true"
+                                            >
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                <circle cx="12" cy="12" r="3"></circle>
+                                            </svg>
+                                        `
+            }
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        newElements.push(resultElement);
+        fragment.appendChild(resultElement);
+    }
+
+    resultsScroll.appendChild(fragment);
+
+    requestAnimationFrame(() => {
+        resultsScroll.querySelectorAll(".resultDonors").forEach(layoutDonorNames);
+
+        isLoadingMore = false;
+
+        if (
+            resultsScroll.scrollTop + resultsScroll.clientHeight >=
+            resultsScroll.scrollHeight - threshold
+        ) {
+            appendNextBatch(query);
+        }
+    });
+}
+
 export function updateSearch() {
     const raw = searchInput.value.trim();
     const query = normalize(raw);
 
     if (!query) {
         resultsWrapper.classList.remove("open");
+        currentMatches = [];
+        displayedCount = 0;
         return;
     }
 
-    const matches = wordData
+    currentMatches = wordData
         .map((item, index) => ({
             item,
             index,
@@ -319,12 +502,14 @@ export function updateSearch() {
                 return a.score - b.score;
             }
 
-            return a.item.word.length - b.item.word.length;
+            return a.index - b.index;
         });
 
     resultsWrapper.classList.add("open");
+    resultsScroll.innerHTML = "";
+    displayedCount = 0;
 
-    if (matches.length === 0) {
+    if (currentMatches.length === 0) {
         resultsScroll.innerHTML = `
             <div style="padding: 14px 15px; color: #555; font-size: 12px;">
                 No matches
@@ -334,156 +519,20 @@ export function updateSearch() {
         return;
     }
 
-    const wordCounts = {};
-
-    for (const result of matches) {
-        const key = normalize(result.item.word);
-        wordCounts[key] = (wordCounts[key] || 0) + 1;
-    }
-
+    // Calculate duplicate information once for this search.
+    wordCounts = {};
     const runningPositions = {};
 
-    resultsScroll.innerHTML = matches
-        .map(result => {
-            const item = result.item;
-            const key = normalize(item.word);
-            const wordObj = wordObjects[result.index];
-            const tracking = isTracking(wordObj);
+    for (const result of currentMatches) {
+        const key = normalize(result.item.word);
 
-            let duplicateBadge = "";
+        wordCounts[key] = (wordCounts[key] || 0) + 1;
 
-            if (wordCounts[key] > 1) {
-                runningPositions[key] =
-                    (runningPositions[key] || 0) + 1;
+        runningPositions[key] = (runningPositions[key] || 0) + 1;
+        result.duplicateNumber = runningPositions[key];
+    }
 
-                duplicateBadge = `
-                    <span class="resultNumber">
-                        #${runningPositions[key]}
-                    </span>
-                `;
-            }
-
-            return `
-                <div class="result" data-index="${result.index}">
-                    <div class="resultMain">
-                        <div class="resultWord">
-                            ${highlightMatch(item.word, query)}
-                            ${duplicateBadge}
-                        </div>
-
-                        <div class="resultDetails">
-                            <div class="detailsInner">
-                                ${item.date ? `
-                                    <div class="detailRow">
-                                        <span class="detailLabel">date</span>
-                                        <span>${escapeHTML(item.date)}</span>
-                                    </div>
-                                ` : ""}
-
-                                ${item.tags?.length ? `
-                                    <div class="detailRow">
-                                        <span class="detailLabel">tags</span>
-                                        <span>
-                                            ${item.tags.map(tag => `
-                                                <span class="tag">#${escapeHTML(tag)}</span>
-                                            `).join("")}
-                                        </span>
-                                    </div>
-                                ` : ""}
-
-                                ${item.description ? `
-                                    <div class="detailRow">
-                                        <span class="detailLabel">note</span>
-                                        <span>
-                                            ${escapeHTML(item.description)}
-                                        </span>
-                                    </div>
-                                ` : ""}
-
-                                ${item.donors?.length ? `
-                                    <div class="resultDonors">
-                                        ${item.donors.map(donor => `
-                                            <span
-                                                class="donorName"
-                                                ${donor.color ? `style="--donor-color: ${escapeHTML(donor.color)}"` : ""}
-                                            >${escapeHTML(donor.name)}</span>
-                                        `).join("")}
-                                    </div>
-                                ` : ""}
-
-                                <div class="resultActions">
-                                    <button
-                                        class="copyButton"
-                                        type="button"
-                                        data-word-id="${escapeHTML(item.id)}"
-                                        aria-label="Copy link for ${escapeHTML(item.word)}"
-                                    >
-                                        ${copyLinkIcon}
-                                    </button>
-
-                                    <button
-                                        class="trackButton"
-                                        type="button"
-                                        data-word-id="${escapeHTML(item.id)}"
-                                        aria-label="${tracking
-                                ? `Stop tracking ${escapeHTML(item.word)}`
-                                : `Track ${escapeHTML(item.word)}`}"
-                                    >
-                                        ${tracking
-                                ? `
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width="16"
-                                                    height="16"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="2"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    aria-hidden="true"
-                                                >
-                                                    <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-6.94"></path>
-                                                    <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.77 21.77 0 0 1-2.06 3.19"></path>
-                                                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                                                    <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
-                                                </svg>
-                                            `
-                                : `
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width="16"
-                                                    height="16"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="2"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    aria-hidden="true"
-                                                >
-                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                                    <circle cx="12" cy="12" r="3"></circle>
-                                                </svg>
-                                            `
-                            }
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        })
-        .join("");
-
-    requestAnimationFrame(() => {
-        resultsWrapper.classList.add("open");
-
-        resultsScroll
-            .querySelectorAll(".resultDonors")
-            .forEach(layoutDonorNames);
-    });
+    appendNextBatch(query);
 }
 
 function updateTrackingButtons(trackedWord) {
@@ -582,6 +631,13 @@ export function initSearchListeners() {
     if (!resultsScroll) {
         return;
     }
+
+    resultsScroll.addEventListener("scroll", () => {
+        if (resultsScroll.scrollTop + resultsScroll.clientHeight >= resultsScroll.scrollHeight - threshold) {
+            const raw = searchInput.value.trim();
+            appendNextBatch(normalize(raw));
+        }
+    });
 
     resultsScroll.addEventListener("click", async event => {
         const copyButton = event.target.closest(".copyButton");

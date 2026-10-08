@@ -78,9 +78,9 @@ id	word	date	[tags]	[note]
 ```
 
 * `id TEXT PRIMARY KEY CHECK (id ~ '^[0-9a-f]{12}$' OR id ~ '^u\d+-[0-9a-f]{6}$')`
-* `word TEXT NOT NULL CHECK (word = LOWER(word))`
+* `word TEXT NOT NULL CHECK (word = LOWER(word) AND word <> '*')`
 * `date DATE NOT NULL`
-* `tags TEXT CHECK (tags = LOWER(tags))`
+* `tags TEXT CHECK (tags = LOWER(tags) AND tags !~ '\s')`
 * `note TEXT`
 
 `id` uses one of the following formats:
@@ -100,7 +100,7 @@ word_id	attribution	date	[transaction_signature]	[color]
 * `attribution TEXT NOT NULL`
 * `date DATE NOT NULL`
 * `transaction_signature TEXT`
-* `color CHAR(7) CHECK (color ~ '^#[0-9a-f]{6}$')`
+* `color VARCHAR(7) CHECK (color ~ '^#[0-9a-f]{6}$')`
 
 `word_id` references the ID of the word to which the attribution is associated.
 
