@@ -262,3 +262,4 @@ a4661d18c181	die for me	2026-10-08	song,me,love	By Chase Atlantic.
 bb1c289f1437	change	2026-10-08	you,us,unrequited,miss,memory,regret	Something I can't handle.
 3c67f73a95d9	argue	2026-10-08	you,bitter,regret,unrequited	It would almost be better, because at least fighting means you still care enough to.
 265ff2cd0896	meeting	2026-10-08	you,love,regret,bitter,miss,memory	如果注定要分别，那相遇的意义是什么？
+9b9121e13e65	let him go	2026-10-09	game,you,regret,bitter	"You two were always together every time I saw you. You should see a therapist."
