@@ -66,6 +66,12 @@ images\
     └── part-2-light.webp
 ```
 
+## Special Search Queries
+| Query | Description                                     |
+| :---- | :---------------------------------------------- |
+| `*`   | Shows all words in chronological order.         |
+| `*-`  | Shows all words in reverse chronological order. |
+
 ## Schemas
 The schemas documented here reflect the current implementation and are subject to change.
 
@@ -78,7 +84,7 @@ id	word	date	[tags]	[note]
 ```
 
 * `id TEXT PRIMARY KEY CHECK (id ~ '^[0-9a-f]{12}$' OR id ~ '^u\d+-[0-9a-f]{6}$')`
-* `word TEXT NOT NULL CHECK (word = LOWER(word) AND word <> '*')`
+* `word TEXT NOT NULL CHECK (word = LOWER(word) AND word NOT IN ('*', '*-'))`
 * `date DATE NOT NULL`
 * `tags TEXT CHECK (tags = LOWER(tags) AND tags !~ '\s')`
 * `note TEXT`

@@ -64,10 +64,6 @@ export function escapeHTML(value) {
 }
 
 export function searchScore(item, query) {
-    if (query === "*") {
-        return 0;
-    }
-
     const word = normalize(item.word);
 
     if (word === query) {
@@ -490,16 +486,25 @@ export function updateSearch() {
         return;
     }
 
+    const showAllReverse = query === "*-";
+    const showAll = query === "*" || showAllReverse;
+
     currentMatches = wordData
         .map((item, index) => ({
             item,
             index,
-            score: searchScore(item, query)
+            score: showAll ? 0 : searchScore(item, query)
         }))
         .filter(result => result.score !== Infinity)
         .sort((a, b) => {
             if (a.score !== b.score) {
                 return a.score - b.score;
+            }
+
+            if (showAll) {
+                return showAllReverse
+                    ? b.index - a.index
+                    : a.index - b.index;
             }
 
             return a.index - b.index;
