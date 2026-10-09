@@ -258,3 +258,4 @@ c13354621dd7	breaking	2026-10-08	me,you,hopeless,feeling	Is it normal to randoml
 f14441c2ef49	i'm sorry	2026-10-08	phrase,me,lost	For everything.
 fdf94b71f8fa	happy	2026-10-08	you,us,love,feeling,miss,memory,nostalgia,place	I'll never feel it the same way as you made it feel to me when I was sixteen.
 98ce0ae28b1c	die for you	2026-10-08	song,you,love	By The Weeknd & Ariana Grande.
+a4661d18c181	die for me	2026-10-08	song,me,love	By Chase Atlantic.
