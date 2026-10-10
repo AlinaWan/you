@@ -264,3 +264,4 @@ bb1c289f1437	change	2026-10-08	you,us,unrequited,miss,memory,regret	Something I 
 265ff2cd0896	meeting	2026-10-08	you,love,regret,bitter,miss,memory	如果注定要分别，那相遇的意义是什么？
 9b9121e13e65	let him go	2026-10-09	game,you,regret,bitter	"You two were always together every time I saw you. You should see a therapist."
 1b2ca55a06b7	doorstep	2026-10-09	you,dream,love,regret,unrequited	In my dreams, you knocked on my door and apologized for hurting me—and it was enough.
+ac4eb46cc502	first love	2026-10-09	you,love,longing,regret,miss,memory,us,wish	Late spring.
