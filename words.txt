@@ -267,3 +267,4 @@ bb1c289f1437	change	2026-10-08	you,us,unrequited,miss,memory,regret	Something I 
 ac4eb46cc502	first love	2026-10-09	you,love,longing,regret,miss,memory,us,wish	Late spring.
 07ed6350b297	boba	2026-10-10	food,you,comfort	If I were your fiancée, would you buy it for me without having to ask?
 3ed744a0a6fc	attachment	2026-10-10	you,miss,memory,love,longing,wish	The person I miss doesn't exist anymore, yet I'm still wishing they'd come back.
+6bdce142127f	wince	2026-10-10	me,memory,bitter	What I do when the memories start to hurt.
