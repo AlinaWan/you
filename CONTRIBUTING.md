@@ -72,6 +72,12 @@ images\
 | `*`   | Shows all words in chronological order.         |
 | `*-`  | Shows all words in reverse chronological order. |
 
+## URL Query Parameters
+| Parameter | Arguments                                                           |
+| :-------- | :------------------------------------------------------------------ |
+| `track`   | The ID of the word object to track.                                 |
+| `debug`   | A comma-delimited combination of flags: `stats`, `physics`, `hash`. |
+
 ## Schemas
 The schemas documented here reflect the current implementation and are subject to change.
 
@@ -109,9 +115,3 @@ word_id	attribution	date	[transaction_signature]	[color]
 * `color VARCHAR(7) CHECK (color ~ '^#[0-9a-f]{6}$')`
 
 `word_id` references the ID of the word to which the attribution is associated.
-
-## URL Query Parameters
-| Parameter | Arguments                                                           |
-| :-------- | :------------------------------------------------------------------ |
-| `track`   | The ID of the word object to track.                                 |
-| `debug`   | A comma-delimited combination of flags: `stats`, `physics`, `hash`. |

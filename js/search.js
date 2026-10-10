@@ -516,8 +516,11 @@ export function updateSearch() {
 
     if (currentMatches.length === 0) {
         resultsScroll.innerHTML = `
-            <div style="padding: 14px 15px; color: #555; font-size: 12px;">
-                No matches
+            <div class="noMatches">
+                <span>No matches</span>
+                <span class="noMatchesHint">
+                    Try searching <button type="button" class="searchHintButton">*</button>
+                </span>
             </div>
         `;
 
@@ -637,6 +640,17 @@ export function initSearchListeners() {
         return;
     }
 
+    resultsScroll.addEventListener("click", event => {
+        const button = event.target.closest(".searchHintButton");
+
+        if (!button) {
+            return;
+        }
+
+        searchInput.value = "*";
+        updateSearch();
+    });
+
     resultsScroll.addEventListener("scroll", () => {
         if (resultsScroll.scrollTop + resultsScroll.clientHeight >= resultsScroll.scrollHeight - threshold) {
             const raw = searchInput.value.trim();
@@ -717,5 +731,6 @@ export function initSearchListeners() {
             "aria-expanded",
             isExpanded
         );
+
     });
 }
