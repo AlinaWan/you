@@ -67,10 +67,11 @@ images\
 ```
 
 ## Special Search Queries
-| Query | Description                                     |
-| :---- | :---------------------------------------------- |
-| `*`   | Shows all words in chronological order.         |
-| `*-`  | Shows all words in reverse chronological order. |
+| Query        | Description                                                                           |
+| :----------- | :------------------------------------------------------------------------------------ |
+| `*`          | Shows all words in chronological order.                                               |
+| `*-`         | Shows all words in reverse chronological order.                                       |
+| `YYYY-MM-DD` | Shows all words on a specific date. Each part can be replaced with `*` as a wildcard. |
 
 ## URL Query Parameters
 | Parameter | Arguments                                                           |
@@ -90,7 +91,7 @@ id	word	date	[tags]	[note]
 ```
 
 * `id TEXT PRIMARY KEY CHECK (id ~ '^[0-9a-f]{12}$' OR id ~ '^u\d+-[0-9a-f]{6}$')`
-* `word TEXT NOT NULL CHECK (word = LOWER(word) AND word NOT IN ('*', '*-'))`
+* `word TEXT NOT NULL CHECK (word = LOWER(word) AND word NOT IN ('*', '*-') AND word !~ '^(\d{4}|\*)-(\d{1,2}|\*)-(\d{1,2}|\*)$')`
 * `date DATE NOT NULL`
 * `tags TEXT CHECK (tags = LOWER(tags) AND tags !~ '\s')`
 * `note TEXT`
@@ -99,6 +100,8 @@ id	word	date	[tags]	[note]
 
 * Maintainer-generated: 6 bytes represented as 12 hexadecimal characters.
 * User-generated: the GitHub issue number prefixed with `u`, followed by a hyphen and 3 bytes represented as 6 hexadecimal characters.
+
+`word` cannot equal any special search queries exactly, but may contain them as substrings.
 
 `tags` is a comma-delimited list of tags without whitespace.
 

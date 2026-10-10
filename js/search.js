@@ -475,9 +475,60 @@ function appendNextBatch(query) {
     });
 }
 
+function parseDateQuery(query) {
+    const match = query.match(
+        /^(\d{4}|\*)-(\d{1,2}|\*)-(\d{1,2}|\*)$/
+    );
+
+    if (!match) {
+        return null;
+    }
+
+    const [, year, month, day] = match;
+
+    if (year === "*" && month === "*" && day === "*") {
+        return ["*", "*", "*"];
+    }
+
+    const normalizedMonth =
+        month === "*" ? "*" : month.padStart(2, "0");
+
+    const normalizedDay =
+        day === "*" ? "*" : day.padStart(2, "0");
+
+    if (normalizedMonth !== "*" &&
+        (+normalizedMonth < 1 || +normalizedMonth > 12)) {
+        return null;
+    }
+
+    if (normalizedDay !== "*" &&
+        (+normalizedDay < 1 || +normalizedDay > 31)) {
+        return null;
+    }
+
+    return [year, normalizedMonth, normalizedDay];
+}
+
+function matchesDate(date, dateQuery) {
+    if (!date || !dateQuery) {
+        return false;
+    }
+
+    const parts = date.split("-");
+
+    if (parts.length !== 3) {
+        return false;
+    }
+
+    return dateQuery.every((part, index) =>
+        part === "*" || part === parts[index]
+    );
+}
+
 export function updateSearch() {
     const raw = searchInput.value.trim();
     const query = normalize(raw);
+    const dateQuery = parseDateQuery(query);
 
     if (!query) {
         resultsWrapper.classList.remove("open");
@@ -487,14 +538,22 @@ export function updateSearch() {
     }
 
     const showAllReverse = query === "*-";
-    const showAll = query === "*" || showAllReverse;
+    const showAll = query === "*" || showAllReverse || query === "*-*-*";
 
     currentMatches = wordData
-        .map((item, index) => ({
-            item,
-            index,
-            score: showAll ? 0 : searchScore(item, query)
-        }))
+        .map((item, index) => {
+            const dateMatch = matchesDate(item.date, dateQuery);
+
+            return {
+                item,
+                index,
+                score: showAll
+                    ? 0
+                    : dateMatch
+                        ? -1
+                        : searchScore(item, query)
+            };
+        })
         .filter(result => result.score !== Infinity)
         .sort((a, b) => {
             if (a.score !== b.score) {
