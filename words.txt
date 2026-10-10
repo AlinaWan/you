@@ -265,3 +265,4 @@ bb1c289f1437	change	2026-10-08	you,us,unrequited,miss,memory,regret	Something I 
 9b9121e13e65	let him go	2026-10-09	game,you,regret,bitter	"You two were always together every time I saw you. You should see a therapist."
 1b2ca55a06b7	doorstep	2026-10-09	you,dream,love,regret,unrequited	In my dreams, you knocked on my door and apologized for hurting me—and it was enough.
 ac4eb46cc502	first love	2026-10-09	you,love,longing,regret,miss,memory,us,wish	Late spring.
+07ed6350b297	boba	2026-10-10	food,you,comfort	If I were your fiancée, would you buy it for me without having to ask?
