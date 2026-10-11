@@ -272,3 +272,4 @@ e63766d261e0	roses	2026-10-10	flower,love,you,comfort	A scent you smelled of.
 4287e9754771	creamy charm	2026-10-10	me,taste,comfort,memory,nostalgia	The perfume I got when we first met, and it's still my favorite.
 f4fac1a9d819	attractive	2026-10-10	you,memory,miss,love,regret	I keep asking myself, "But what if I was only attracted to his body?" but the most attractive part of you was being in computer science and the way I watched you code on LeetCode while I yapped about Span<T> and stackalloc.
 58d69c7e4059	heart	2026-10-10	you,bitter,regret,unrequited	Your cold one is finally melting, but it's for someone else.
+44715f153275	treat	2026-10-10	us,you,regret,bitter,unrequited	Why can't you just treat me like when we first met? What happened to the version of you who cared about keeping us together?
