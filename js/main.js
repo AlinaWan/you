@@ -5,7 +5,7 @@ import { camera, updateTracking, startTracking } from "./camera.js";
 import { loadWordsFromRepository, wordData } from "./dataLoader.js";
 import { Word, wordObjects, time, setTime, setWordObjects } from "./word.js";
 import { rebuildSpatialHash, getVisibleObjects, handleCollisions } from "./physics.js";
-import { initSearchListeners } from "./search.js";
+import { initSearchListeners, showTrackedWord } from "./search.js";
 import { toggleMute } from "./audio.js";
 import { updateWordCursor } from "./wordCursor.js";
 import { initDebug, updateDebug, drawDebug } from "./debug.js";
@@ -87,6 +87,7 @@ function trackWordFromUrl() {
     }
 
     startTracking(word);
+    showTrackedWord(word);
 }
 
 async function start() {

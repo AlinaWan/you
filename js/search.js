@@ -46,6 +46,7 @@ let displayedCount = 0;
 const BATCH_SIZE = 20;
 const threshold = 300;
 let isLoadingMore = false;
+let forcedWordId = null;
 
 export function normalize(value) {
     return value
@@ -342,6 +343,11 @@ function appendNextBatch(query) {
         resultElement.className = "result";
         resultElement.dataset.index = result.index;
 
+        if (item.id === forcedWordId) {
+            resultElement.classList.add("expanded");
+            resultElement.setAttribute("aria-expanded", "true");
+        }
+
         resultElement.innerHTML = `
             <div class="resultMain">
                 <div class="resultWord">
@@ -525,6 +531,12 @@ function matchesDate(date, dateQuery) {
     );
 }
 
+export function showTrackedWord(word) {
+    forcedWordId = word.id;
+    searchInput.value = word.text;
+    updateSearch();
+}
+
 export function updateSearch() {
     const raw = searchInput.value.trim();
     const query = normalize(raw);
@@ -535,6 +547,34 @@ export function updateSearch() {
         currentMatches = [];
         displayedCount = 0;
         return;
+    }
+
+    if (forcedWordId !== null) {
+        const index = wordData.findIndex(
+            item => item.id === forcedWordId
+        );
+
+        if (index !== -1) {
+            currentMatches = [{
+                item: wordData[index],
+                index,
+                score: 0,
+                duplicateNumber: 1
+            }];
+
+            wordCounts = {
+                [normalize(wordData[index].word)]: 1
+            };
+
+            resultsWrapper.classList.add("open");
+            resultsScroll.innerHTML = "";
+            displayedCount = 0;
+
+            appendNextBatch(query);
+            return;
+        }
+
+        forcedWordId = null;
     }
 
     const showAllReverse = query === "*-";
@@ -662,7 +702,10 @@ function updateTrackingButtons(trackedWord) {
 
 export function initSearchListeners() {
     if (searchInput) {
-        searchInput.addEventListener("input", updateSearch);
+        searchInput.addEventListener("input", () => {
+            forcedWordId = null;
+            updateSearch();
+        });
 
         searchInput.addEventListener("keydown", event => {
             if (event.key === "Enter") {
