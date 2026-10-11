@@ -21,6 +21,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  queue: max
+
 jobs:
   add-word:
     runs-on: ubuntu-latest
