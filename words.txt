@@ -282,3 +282,4 @@ e55aa9261132	honestly	2026-10-11	us,me,you,regret,unrequited	It hurts so much mo
 4ee477d55e2b	cyanide	2026-10-12	me	Maybe I should drink some.
 c0779202779e	used to	2026-10-12	you,bitter,goodbye	I got so used to what I thought would be forever.
 cf9d001dd59c	whiskey	2026-10-12	food,taste	I think I'll take mine neat.
+883f7fcc0e02	understand	2026-10-13	me,regret,bitter	No one ever does.
