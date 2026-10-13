@@ -284,3 +284,4 @@ c0779202779e	used to	2026-10-12	you,bitter,goodbye	I got so used to what I thoug
 cf9d001dd59c	whiskey	2026-10-12	food,taste	I think I'll take mine neat.
 883f7fcc0e02	understand	2026-10-13	me,regret,bitter	No one ever does.
 c12c2fd35cc0	irritable	2026-10-13	me,you,regret,feeling	I'm sorry for every time I got irritated at you for no reason. You were always so understanding and really sweet to me. I should've been better to you.
+a41f44aea4a4	effort	2026-10-13	unrequited,longing	But who would go to the ends of the earth for me?
