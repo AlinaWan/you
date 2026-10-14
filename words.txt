@@ -289,3 +289,4 @@ a41f44aea4a4	effort	2026-10-13	unrequited,longing	But who would go to the ends o
 900f13afee58	courtship	2026-10-14	you,love,longing,dream	Would you romance me, treat me, and take care of me?
 u32-e8c55c	grasp	2026-10-14	you,try,gone	Every time I want to reach out, all that I feel is a wall; come back to me.
 u33-b74a46	unspeakable	2026-10-14	us,memory	So many things that can't be put into words because you would never understand, yet all I want is to talk to you again.
+7b9ce9b23140	questions	2026-10-14	you,regret,unrequited	I don't ask many about you or your past, because I don't want to hurt myself by knowing the answer.
