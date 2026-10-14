@@ -286,3 +286,4 @@ cf9d001dd59c	whiskey	2026-10-12	food,taste	I think I'll take mine neat.
 c12c2fd35cc0	irritable	2026-10-13	me,you,regret,feeling	I'm sorry for every time I got irritated at you for no reason. You were always so understanding and really sweet to me. I should've been better to you.
 a41f44aea4a4	effort	2026-10-13	unrequited,longing	But who would go to the ends of the earth for me?
 978af4e756ff	装傻	2026-10-13	phrase,feeling	Act fool.
+900f13afee58	courtship	2026-10-14	you,love,longing,dream	Would you romance me, treat me, and take care of me?
