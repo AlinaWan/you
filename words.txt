@@ -297,3 +297,4 @@ u36-9a3fcf	malloc	2026-10-17	you,memory	I never really understood why you did it
 d4e27216261b	daydream	2026-10-18	dream,longing	
 533a73818602	miss kita	2026-10-18	miss,memory	I would go back, even with the bad. I miss it all…
 7d9b06dbf26f	脆弱	2026-10-18	me,feeling	You let me understand my desires, fears, and vulnerabilities for the better.
+a6ccd960c94a	hate you	2026-10-18	you,bitter,regret,feeling	I should, but deep down I just don't think it's true.
