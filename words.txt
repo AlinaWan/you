@@ -304,3 +304,4 @@ u37-74af58	overload	2026-10-20	me,suffering	To have 4 midterms in a week, 6 fina
 51fce1060435	mirror	2026-10-20	you,love,dream	Two reflections into one.
 5b3e4c405b41	would've	2026-10-22	us,dream,love,unrequited,regret	We would've been so cute together.
 800a0ff834f8	unimportant	2026-10-23	me,bitter,hopeless	I just want someone to treat me like I'm important.
+6d6c8b5d9076	outside	2026-10-25		
