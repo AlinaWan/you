@@ -317,3 +317,4 @@ u39-4349ce	ashes	2026-11-08	me,save,you	I can't even save the friend burning bef
 a582d681c245	操爱情	2026-11-09	phrase,unrequited	我仍然对着风轻声呼唤她的名字，明知道她再也不会回应，只希望风能记住。
 14bfd2615de1	miss	2026-11-10	you	
 u40-53bb7c	wish	2026-11-10	you	11:11; make a wish!
+u41-3c3e53	cut off	2026-11-11	you,me	I was going to message you at 11:11 today, but I have no way to contact you.
